@@ -67,7 +67,7 @@ rehash_precmd() {
 
 add-zsh-hook -Uz precmd rehash_precmd
 
-for file in $HOME/.{aliases,functions,zsh_prompt,zsh_keys}; do
+for file in $HOME/.{aliases,exports,functions,zsh_prompt,zsh_keys}; do
 	if [[ -r "$file" ]] && [[ -f "$file" ]]; then
 		source "$file"
 	fi

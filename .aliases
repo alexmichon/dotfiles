@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# Navigation
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+
+# Shortcuts
+alias dl="cd ~/Downloads"
+alias g="git"
+alias h="history"
+
+# ls
+alias l="ls -lhF --color"
+alias ll="ls -lhF --color"
+alias la="ls -lahF --color"
+alias ls="ls --color"
+
+# Miscellaneous
+alias grep="grep --color=auto"
+alias sudo="sudo "
+alias cp="cp -i"
+alias mv="mv -i"
+alias mkdir="mkdir -p"
+alias vi="vim"

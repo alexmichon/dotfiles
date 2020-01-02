@@ -1,0 +1,1 @@
+PROMPT="%B%F{white}[%F{magenta}%n%F{white}]%b %F{blue}%~%f %% "

@@ -16,3 +16,7 @@ dot() {
 pacs() {
     pacman -Slq | fzf -i -m --tac --preview 'pacman -Si {1}' | xargs -ro sudo pacman -S
 }
+
+updatevim() {
+    SHELL=(which sh) vim +BundleInstall! +BundleClean +qall
+}

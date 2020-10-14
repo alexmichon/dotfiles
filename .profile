@@ -7,7 +7,7 @@ add_path() {
 
 add_path "$HOME/.local/bin"
 
-export BROWSER=brave
+export BROWSER=chromium
 
 if systemctl -q is-active graphical.target && [[ ! $DISPLAY && $XDG_VTNR -eq 1 ]]; then
 	exec startx

@@ -4,15 +4,20 @@
 
 set autoindent
 set autoread
-set backspace=indent,start
+set backspace=indent,start,eol
+set clipboard=unnamed
 set colorcolumn=100
 set expandtab
+set hlsearch
 set ignorecase
+set incsearch
 set mouse=a
 set number
 set pastetoggle=<F2>
 set relativenumber
+set shell=bash
 set shiftwidth=4
+set showmode
 set smartcase
 set smartindent
 set splitbelow
@@ -22,6 +27,8 @@ set wildmenu
 set wildmode=list:full
 
 autocmd BufRead *.py set nosmartindent
+
+syntax on
 
 "
 " Mappings
@@ -75,8 +82,12 @@ map <C-k> <C-w>k
 map <C-l> <C-w>l
 
 " Tab navigation
+
 nnoremap <Tab> gt
 nnoremap <S-Tab> gT
+
+" Copy to system clipboard
+vnoremap <C-c> "+y
 
 "
 " Functions
@@ -147,10 +158,25 @@ Plugin 'tpope/vim-commentary'
 " Vim-better-whitespace
 Plugin 'ntpeters/vim-better-whitespace'
 
+" Goyo
+Plugin 'junegunn/goyo.vim'
+
+" Airline
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+let g:airline_theme='solarized'
+let g:airline_solarized_bg='dark'
+let g:airline_solarized_normal_green=1
+let g:airline_section_y=''
+"let g:airline#extensions#tagbar#flags = 'f'
+let g:airline#extensions#tagbar#enabled=1
+
 call vundle#end()
 filetype plugin indent on
 
-hi CursorLine cterm=none ctermbg=0
+set cursorline
+hi clear CursorLine
+hi clear CursorLineNr
 
 augroup testgroup
    autocmd!
@@ -158,9 +184,8 @@ augroup testgroup
    autocmd BufNewFile,BufRead * syn match MergeMarker /\(>>>>\|====\|<<<<\).*$/
    autocmd BufNewFile,BufRead * syn match ExtraLines /^$\n^$/
 
-   set hlsearch
-   set incsearch
    autocmd BufNewFile,BufRead * hi LineNr ctermfg=Grey
+   autocmd BufNewFile,BufRead * hi CursorLineNr ctermfg=DarkYellow
    autocmd BufNewFile,BufRead * hi Visual ctermbg=White ctermfg=Black
    autocmd BufNewFile,BufRead * hi Search ctermbg=White ctermfg=DarkRed cterm=bold
    autocmd BufNewFile,BufRead * hi Statement ctermfg=DarkYellow cterm=none
@@ -180,5 +205,3 @@ augroup testgroup
    autocmd BufNewFile,BufRead * hi ExtraLines ctermbg=DarkRed
 augroup END
 
-syntax enable
-syntax on

@@ -77,4 +77,17 @@ done
 source /usr/share/fzf/key-bindings.zsh
 source /usr/share/fzf/completion.zsh
 
+# Pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+if command -v pyenv 1>/dev/null 2>&1; then
+    eval "$(pyenv init -)"
+fi
+
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
+
+if [[ $DISPLAY ]]; then
+    if which tmux >/dev/null 2>&1; then
+        # test -z ${TMUX} && tmux
+    fi
+fi

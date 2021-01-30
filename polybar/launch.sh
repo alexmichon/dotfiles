@@ -14,6 +14,10 @@ icons \
 date \
 )
 
+iface=$(my-interface)
+monitors=$(xrandr | grep " connected" | awk '{print $1}')
+primary=$(echo "$monitors" | grep "^e" | head -1)
+
 PID_DIR=/tmp/polybar
 LOG_DIR="$HOME/.log/polybar"
 if [ ! -d $LOG_DIR ]; then
@@ -23,15 +27,15 @@ fi
 rm -r $PID_DIR
 mkdir -p $PID_DIR
 for bar in "${BARS[@]}"; do
-	polybar -r $bar &
+	INTERFACE=$iface MONITOR=$primary polybar -r $bar &
 	echo "$!" > $PID_DIR/$bar.pid
 done
 
-EXTERNAL_MONITOR="DP-1"
-EXTERNAL_PRESENT=$(xrandr --query | grep "$EXTERNAL_MONITOR")
-if [[ $EXTERNAL_PRESENT == *connected* ]]; then
+external=$(echo "$monitors" | grep -v "^e" | head -1)
+echo "$external"
+if [[ -n $external ]]; then
 	for bar in "${BARS[@]}"; do
-		MONITOR=$EXTERNAL_MONITOR polybar -r $bar-external > $LOG_DIR/$bar.log 2>&1 &
+		INTERFACE=$iface MONITOR=$external polybar -r $bar-external > $LOG_DIR/$bar.log 2>&1 &
 		echo "$!" > $PID_DIR/$bar-external.pid
 	done
 fi

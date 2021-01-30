@@ -50,7 +50,7 @@ padding-right = 0
 module-margin-left = 1
 module-margin-right = 2
 
-font-0 = "Ubuntu Mono Nerd Font:pixelsize=10;3"
+font-0 = "Ubuntu Mono Nerd Font:pixelsize=10;antialias=true;autohint=false;3"
 font-1 = Siji:pixelsize=15:antialias=false;3
 font-2 = "Ubuntu Mono Nerd Font:pixelsize=7;3"
 
@@ -223,7 +223,7 @@ label = %percentage_used%%
 
 [module/wlan]
 type = internal/network
-interface = wlo1
+interface = ${env:INTERFACE:wlo1}
 interval = 3.0
 
 format-connected = <label-connected>
@@ -443,30 +443,30 @@ click-left = my-rofi power
 
 [module/music]
 type = custom/script
-exec = /home/amichon/.local/bin/scroll-text -i 0.5 -r 5 -c 37 -s 5 /home/amichon/.config/polybar/scripts/music.sh
+exec = $HOME/.local/bin/scroll-text -i 0.5 -r 5 -c 37 -s 5 $HOME/.config/polybar/scripts/music.sh
 tail = true
 
 [module/music-play]
 type = custom/script
-exec = /home/amichon/.config/polybar/scripts/music-play.sh
+exec = $HOME/.config/polybar/scripts/music-play.sh
 interval = 5
 click-left = my-music playpause
 
 [module/music-next]
 type = custom/script
-exec = /home/amichon/.config/polybar/scripts/music-next.sh
+exec = $HOME/.config/polybar/scripts/music-next.sh
 interval = 5
 click-left = my-music next
 
 [module/music-prev]
 type = custom/script
-exec = /home/amichon/.config/polybar/scripts/music-prev.sh
+exec = $HOME/.config/polybar/scripts/music-prev.sh
 interval = 5
 click-left = my-music prev
 
 [module/sxhkd]
 type = custom/script
-exec = /home/amichon/.config/polybar/scripts/sxhkd.sh
+exec = $HOME/.config/polybar/scripts/sxhkd.sh
 interval = 99999
 
 [module/sep]
@@ -499,7 +499,6 @@ modules-center = power
 
 [bar/power-external]
 inherit = bar/power
-monitor = DP-1
 width = 2%
 
 [bar/wm]
@@ -512,7 +511,6 @@ modules-center = bspwm
 
 [bar/wm-external]
 inherit = bar/wm
-monitor = DP-1
 width = 10%
 offset-x = 4%
 
@@ -536,7 +534,6 @@ modules-left = music-prev music-play music-next music
 
 [bar/music-external]
 inherit = bar/music
-monitor = DP-1
 width = 30%
 offset-x = 15%
 
@@ -553,7 +550,6 @@ offset-x = 45%
 
 [bar/sxhkd-external]
 inherit = bar/sxhkd
-monitor = DP-1
 
 width = 8%
 offset-x = 46%
@@ -576,7 +572,6 @@ modules-right = empty
 
 [bar/tray-external]
 inherit = bar/base
-monitor = DP-1
 
 [bar/icons]
 inherit = bar/base
@@ -594,7 +589,6 @@ padding-right = 2
 
 [bar/icons-external]
 inherit = bar/icons
-monitor = DP-1
 width = 5%
 offset-x = 89%
 tray-position = none
@@ -610,7 +604,6 @@ modules-center = date
 
 [bar/date-external]
 inherit = bar/date
-monitor = DP-1
 width = 4%
 offset-x = 95%
 

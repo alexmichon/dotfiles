@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sink=1
+sink=$(cat ~/.local/data/volume-sink)
 
 VOLUME_NOTIF_ID=555
 

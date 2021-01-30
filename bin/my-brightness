@@ -1,8 +1,14 @@
 #!/bin/bash
 # set and get values in percentage
 
-value=$(sudo /usr/lib/gnome-settings-daemon/gsd-backlight-helper --get-brightness)
-max=$(sudo /usr/lib/gnome-settings-daemon/gsd-backlight-helper --get-max-brightness)
+release=$(lsb_release -sd)
+if [[ "$release" == "Ubuntu" ]]; then
+	value=$(sudo /usr/lib/gnome-settings-daemon/gsd-backlight-helper --get-brightness)
+	max=$(sudo /usr/lib/gnome-settings-daemon/gsd-backlight-helper --get-max-brightness)
+else
+	value=$(cat /sys/class/backlight/intel_backlight/actual_brightness)
+	max=$(cat /sys/class/backlight/intel_backlight/max_brightness)
+fi
 
 percent=$(( $value * 100 / $max ))
 
@@ -31,4 +37,8 @@ fi
 
 value=$(( $percent * $max / 100 ))
 
-sudo /usr/lib/gnome-settings-daemon/gsd-backlight-helper --set-brightness $value
+if [[ "$release" == "Ubuntu" ]]; then
+	sudo /usr/lib/gnome-settings-daemon/gsd-backlight-helper --set-brightness $value
+else
+	sudo echo "$value" > /sys/class/backlight/intel_backlight/brightness
+fi

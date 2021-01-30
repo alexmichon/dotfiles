@@ -9,6 +9,8 @@ WINDOWS=( \
 "sidebar" \
 "calendar-icon" \
 "calendar" \
+"stock-icon" \
+"stock" \
 "weather" \
 )
 

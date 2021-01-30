@@ -330,6 +330,7 @@ install_polybar() {
 	mkdir -p $install_dir/.config/polybar
 	log "* Linking $install_dir/.config/polybar/config"
 	do_ln $dotfiles_dir/polybar/config $install_dir/.config/polybar/config
+	do_ln $dotfiles_dir/polybar/launch.sh $install_dir/.config/polybar/launch.sh
 
 	if [ -d $dotfiles_dir/polybar/scripts ]; then
 		mkdir -p $install_dir/.config/polybar/scripts

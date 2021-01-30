@@ -1,0 +1,223 @@
+# Prompt
+autoload -U add-zsh-hook
+
+PROMPT_EXECUTION_BELL_DELAY=30000
+PROMPT_EXECUTION_PRINT_DELAY=30000
+
+function prompt_human_time() {
+	local tmp=$1
+	local days=$(( tmp / 60 / 60 / 24 ))
+	local hours=$(( tmp / 60 / 60 % 24 ))
+	local minutes=$(( tmp / 60 % 60 ))
+	local seconds=$(( tmp % 60 ))
+	(( $days > 0 )) && echo -n "${days}d "
+	(( $hours > 0 )) && echo -n "${hours}h "
+	(( $minutes > 0 )) && echo -n "${minutes}m "
+	echo -n "${seconds}s"
+}
+
+function preexec_start_exec_time() {
+	PROMPT_EXECUTION_START=$(($(date +%s%0N)/1000000))
+}
+
+function precmd_check_exec_delay() {
+	unset PROMPT_EXECUTION_ELAPSED
+	if [ -n "$PROMPT_EXECUTION_START" ]; then
+		local now=$(($(date +%s%0N)/1000000))
+		local elapsed=$(($now-$PROMPT_EXECUTION_START))
+
+		if [[ "$elapsed" -gt "$PROMPT_EXECUTION_PRINT_DELAY" ]]; then
+			PROMPT_EXECUTION_ELAPSED=$(prompt_human_time $(( elapsed / 1000 )) )
+		fi
+
+		if [[ "$elapsed" -gt "$PROMPT_EXECUTION_BELL_DELAY" ]]; then
+			tput bel
+		fi
+		unset PROMPT_EXECUTION_START
+	fi
+}
+
+function prompt_last_exec() {
+	if [[ -n "$PROMPT_EXECUTION_ELAPSED" ]]; then
+		echo -n "($PROMPT_EXECUTION_ELAPSED) "
+	fi
+}
+
+add-zsh-hook preexec preexec_start_exec_time
+add-zsh-hook precmd precmd_check_exec_delay
+
+# Git status
+
+# Force update prompt when shell starts
+__PROMPT_GIT_UPDATE_GLOBAL=1
+__PROMPT_GIT_UPDATE_CURRENT=1
+
+function preexec_update_git_vars() {
+	__PROMPT_GIT_UPDATE_CURRENT=1
+    case "$2" in
+        git*|hub*|gh*|stg*)
+		__PROMPT_GIT_UPDATE_GLOBAL=1
+        ;;
+    esac
+}
+
+function precmd_update_git_vars() {
+	if [[ -z "$__IS_GIT_DIR" ]] || [[ -z "$GIT_PROMPT_ENABLE" ]]; then
+		unset GIT_GLOBAL_STATUS
+		unset GIT_CURRENT_STATUS
+	else
+		if [ -n "$__PROMPT_GIT_UPDATE_GLOBAL" ]; then
+			update_global_git_vars
+		fi
+
+		if [ -n "$__PROMPT_GIT_UPDATE_CURRENT" ]; then
+			update_current_git_vars
+		fi
+	fi
+
+	unset __PROMPT_GIT_UPDATE_GLOBAL
+	unset __PROMPT_GIT_UPDATE_CURRENT
+}
+
+function chpwd_update_git_vars() {
+	local oldroot=$GIT_ROOT_DIR
+	update_is_git_dir
+	if [[ -n "$__IS_GIT_DIR" ]] && [[ "$GIT_ROOT_DIR" != "$oldroot" ]]; then
+		__PROMPT_GIT_UPDATE_GLOBAL=1
+	fi
+}
+
+function update_is_git_dir() {
+	unset __IS_GIT_DIR
+	local root=$(git rev-parse --show-toplevel 2> /dev/null)
+	if [[ -n "$root" ]]; then
+		__IS_GIT_DIR=1
+		GIT_ROOT_DIR=$root
+		__PROMPT_GIT_UPDATE_GLOBAL=1
+	fi
+}
+
+function update_global_git_vars() {
+	unset __GLOBAL_GIT_STATUS
+	unset GIT_GLOBAL_STATUS
+	if [[ -n "$__IS_GIT_DIR" ]] && [[ -n "$GIT_PROMPT_ENABLE" ]]; then
+		__GLOBAL_GIT_STATUS=1
+
+		GIT_BRANCH=$(git symbolic-ref HEAD --short 2> /dev/null)
+		if [[ "$?" != "0" ]]; then
+			GIT_BRANCH=$(git rev-parse --short=6 HEAD 2> /dev/null)
+		else
+			GIT_REMOTE=$(git config branch.$GIT_BRANCH.remote 2> /dev/null)
+			GIT_MERGE=$(git config branch.$GIT_BRANCH.merge 2> /dev/null)
+			if [[ -n "$GIT_REMOTE" ]] && [[ -n "$GIT_MERGE" ]]; then
+				GIT_LEFTRIGHT=$(git rev-list --left-right refs/remotes/"$GIT_REMOTE"/"${GIT_MERGE:11}"...HEAD --count 2> /dev/null)
+				GIT_BEHIND=$(echo "$GIT_LEFTRIGHT" | awk '{print $1;}')
+				GIT_AHEAD=$(echo "$GIT_LEFTRIGHT" | awk '{print $2;}')
+			fi
+		fi
+		GIT_GLOBAL_STATUS="$GIT_PROMPT_PREFIX$GIT_PROMPT_BRANCH$GIT_BRANCH%f%b"
+		if [ "$GIT_BEHIND" -ne "0" ] || [ "$GIT_AHEAD" -ne "0" ]; then
+			GIT_GLOBAL_STATUS="$GIT_GLOBAL_STATUS$GIT_PROMPT_SEPARATOR"
+			if [ "$GIT_BEHIND" -ne "0" ]; then
+				GIT_GLOBAL_STATUS="$GIT_GLOBAL_STATUS$GIT_BEHIND$GIT_PROMPT_BEHIND%f"
+			fi
+			if [ "$GIT_AHEAD" -ne "0" ]; then
+				GIT_GLOBAL_STATUS="$GIT_GLOBAL_STATUS$GIT_AHEAD$GIT_PROMPT_AHEAD%f"
+			fi
+		fi
+		GIT_GLOBAL_STATUS="$GIT_GLOBAL_STATUS$GIT_PROMPT_SEPARATOR"
+	fi
+}
+
+function update_current_git_vars() {
+    unset __CURRENT_GIT_STATUS
+	unset GIT_CURRENT_STATUS
+
+	if [[ -n "$__IS_GIT_DIR" ]] && [[ -n "$GIT_PROMPT_ENABLE" ]]; then
+		__CURRENT_GIT_STATUS=1
+
+		GIT_TMP=$(git diff --name-status 2> /dev/null)
+		GIT_CHANGED="0"
+		if [[ -n "$GIT_TMP" ]]; then
+			GIT_CHANGED=$(( $(echo "$GIT_TMP" | wc -l) - $(echo "$GIT_TMP" | grep '^U' -c) ))
+		fi
+
+		GIT_TMP=$(git diff --name-status --staged 2> /dev/null)
+		GIT_CONFLICTS="0"
+		GIT_STAGED="0"
+		if [[ -n "$GIT_TMP" ]]; then
+			GIT_CONFLICTS=$(echo $GIT_TMP | grep '^U' -c)
+			GIT_STAGED=$(( $(echo $GIT_TMP | wc -l) - $GIT_CONFLICTS ))
+		fi
+
+		GIT_UNTRACKED=$(git status --porcelain 2> /dev/null | grep '^??' -c)
+
+		if [ "$GIT_STAGED" -ne "0" ]; then
+			GIT_CURRENT_STATUS="$GIT_CURRENT_STATUS$GIT_STAGED$GIT_PROMPT_STAGED%f,"
+		fi
+		if [ "$GIT_CONFLICTS" -ne "0" ]; then
+			GIT_CURRENT_STATUS="$GIT_CURRENT_STATUS$GIT_CONFLICTS$GIT_PROMPT_CONFLICTS%f,"
+		fi
+		if [ "$GIT_CHANGED" -ne "0" ]; then
+			GIT_CURRENT_STATUS="$GIT_CURRENT_STATUS$GIT_CHANGED$GIT_PROMPT_CHANGED%f,"
+		fi
+		if [ "$GIT_UNTRACKED" -ne "0" ]; then
+			GIT_CURRENT_STATUS="$GIT_CURRENT_STATUS$GIT_UNTRACKED$GIT_PROMPT_UNTRACKED%f,"
+		fi
+		if [ "$GIT_CHANGED" -eq "0" ] && [ "$GIT_CONFLICTS" -eq "0" ] && [ "$GIT_STAGED" -eq "0" ] && [ "$GIT_UNTRACKED" -eq "0" ]; then
+			GIT_CURRENT_STATUS="$GIT_CURRENT_STATUS$GIT_PROMPT_CLEAN,"
+		fi
+		GIT_CURRENT_STATUS=${GIT_CURRENT_STATUS%?}
+		GIT_CURRENT_STATUS="$GIT_CURRENT_STATUS%f$GIT_PROMPT_SUFFIX"
+	fi
+}
+
+function prompt_git_status() {
+	if [ -n "$GIT_PROMPT_ENABLE" ]; then
+		echo -n "$GIT_GLOBAL_STATUS$GIT_CURRENT_STATUS"
+	fi
+}
+
+add-zsh-hook chpwd chpwd_update_git_vars
+add-zsh-hook preexec preexec_update_git_vars
+add-zsh-hook precmd precmd_update_git_vars
+
+# Check if git directory when init
+update_is_git_dir
+
+# Default values for the appearance of the prompt. Configure at will.
+GIT_PROMPT_PREFIX="("
+GIT_PROMPT_SUFFIX=")"
+GIT_PROMPT_SEPARATOR="|"
+GIT_PROMPT_BRANCH="%B%F{green}"
+GIT_PROMPT_STAGED="%F{green}%{+%G%}"
+GIT_PROMPT_CONFLICTS="%F{red}%}%{x%G%}"
+GIT_PROMPT_CHANGED="%F{blue}%}%{*%G%}"
+GIT_PROMPT_BEHIND="%F{cyan}%{↓ %2G%}%f"
+GIT_PROMPT_AHEAD="%F{cyan}%{↑ %2G%}%f"
+GIT_PROMPT_UNTRACKED="%{?%G%}"
+GIT_PROMPT_CLEAN="%F{green}%}%{✔%G%}"
+
+GIT_PROMPT_ENABLE=1
+
+setopt prompt_subst
+
+PROMPT=$'%B%F{magenta}[%m]%f%b %F{cyan}%~%f%-50(l::\n) %B%F{yellow}>%f%b '
+RPROMPT='$(prompt_last_exec)%B%F{red}%(?..[%?] )%f%b$(prompt_git_status)'
+
+# Cursor color
+zle-keymap-select () {
+	if [ $KEYMAP = vicmd ]; then
+		echo -ne "\033]12;Orange1\007"
+	else
+		echo -ne "\033]12;Green1\007"
+	fi
+}
+
+zle -N zle-keymap-select
+zle-line-init () {
+	zle -K viins
+	echo -ne "\033]12;Green1\007"
+}
+
+zle -N zle-line-init

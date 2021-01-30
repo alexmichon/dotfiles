@@ -1,0 +1,28 @@
+#!/bin/bash
+
+NOTES_DIR=$HOME/Documents/notes
+TERMINAL=alacritty
+
+list_notes() {
+	local all_notes=""
+	for file in $(ls $NOTES_DIR); do
+		file=$(echo "$file" | cut -f 1 -d '.')
+		all_notes="$all_notes$file\n"
+		echo $file
+	done
+}
+
+rofi_notes() {
+	local all_notes=$(list_notes)
+
+	all_notes="${all_notes::-2}"
+
+	local choice=$(echo -e "$all_notes" | rofi -dmenu -p "Note")
+	if [[ -z $choice ]]; then
+		exit 0
+	fi
+
+	$TERMINAL --class "scratchterm,scratchterm" --command $(which vim) $NOTES_DIR/$choice.txt
+}
+
+rofi_notes

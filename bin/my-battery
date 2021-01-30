@@ -1,0 +1,30 @@
+#!/bin/bash
+
+battery=BAT0
+path="/sys/class/power_supply/$battery"
+
+case "$1" in
+	percent)
+		capacity=$(cat "$path/charge_now")
+		fullcapacity=$(cat "$path/charge_full")
+		percent=$(bc <<< "scale=2;$capacity/$fullcapacity*100")
+		echo "${percent%%.*}"
+		;;
+	status)
+		status=$(cat "$path/status")
+		if [[ "$status" == "Unknown" ]]; then
+			echo "Charging"
+		else
+			echo "$status"
+		fi
+		;;
+	time)
+		status=$(cat "$path/status")
+		if [[ $status =~ Unknown|Full ]]; then
+			echo "inf"
+			exit
+		fi
+		output=$(acpi -i | grep "Battery 0" | head -n 1 | sed 's/^.*:\s//g')
+		echo "${output}" | sed 's/^.*:\s//g' | sed 's/.*, //g' | sed 's/,.*//g' | awk '{print $1}' | cut -d: -f1-2
+		;;
+esac

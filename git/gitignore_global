@@ -1,0 +1,9 @@
+tags
+cscope*
+*.swp
+*.swo
+*.swn
+.lvimrc
+compile_commands.json
+.ccls
+.ccls-cache

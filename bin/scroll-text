@@ -1,0 +1,80 @@
+#!/usr/bin/python3
+
+import argparse
+import subprocess
+import sys
+import threading
+import time
+
+def popen_and_call(on_exit, popen_args):
+    """
+    Runs the given args in a subprocess.Popen, and then calls the function
+    on_exit when the subprocess completes.
+    on_exit is a callable object, and popen_args is a list/tuple of args that
+    would give to subprocess.Popen.
+    """
+    def run_in_thread(on_exit, popen_args):
+        proc = subprocess.Popen(popen_args, stdout=subprocess.PIPE)
+        proc.wait()
+        on_exit(proc)
+        return
+    thread = threading.Thread(target=run_in_thread, args=(on_exit, popen_args))
+    thread.start()
+    # returns immediately after the thread starts
+    return thread
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument("-i", "--interval", type=float)
+parser.add_argument("-r", "--refresh", type=float, default=0)
+parser.add_argument("-c", "--chars", type=int)
+parser.add_argument("-s", "--spaces", type=int, default=3)
+parser.add_argument("command", type=str)
+args = parser.parse_args()
+
+string = ""
+lock = threading.Lock()
+refresh = 0
+index = 0
+
+def update_string(proc):
+    global string, refresh
+    output, err = proc.communicate()
+    if proc.returncode:
+        print('WARNING: process failed: %s', err, file=sys.stderr)
+        return
+
+    lock.acquire()
+    if string != output:
+        index = 0
+    string = output.decode().replace('\n', '')
+    refresh = time.time() + args.refresh
+    lock.release()
+
+t = popen_and_call(update_string, args.command.split())
+t.join()
+
+def build_string(string, index):
+    res = string + " " * args.spaces + string
+
+    return res[index:index + args.chars]
+
+while True:
+    lock.acquire()
+
+    if len(string) < args.chars:
+        print(string, flush=True)
+    else:
+        print(build_string(string, index), flush=True)
+    if time.time() > refresh and args.refresh:
+        popen_and_call(update_string, args.command.split())
+        pass
+
+    index += 1
+    if index >= len(string) + args.spaces:
+        index = 0
+
+    lock.release()
+
+    time.sleep(args.interval)
+

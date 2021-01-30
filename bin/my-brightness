@@ -1,0 +1,34 @@
+#!/bin/bash
+# set and get values in percentage
+
+value=$(sudo /usr/lib/gnome-settings-daemon/gsd-backlight-helper --get-brightness)
+max=$(sudo /usr/lib/gnome-settings-daemon/gsd-backlight-helper --get-max-brightness)
+
+percent=$(( $value * 100 / $max ))
+
+case "$1" in
+	inc)
+		percent=$(( $percent + $2 ))
+		;;
+	dec)
+		percent=$(( $percent - $2 ))
+		;;
+	get)
+		echo "$value"
+		exit
+		;;
+	percent)
+		echo "$percent"
+		exit
+		;;
+esac
+
+if [[ "$percent" -lt "0" ]]; then
+	percent=0
+elif [[ "$percent" -gt "100" ]]; then
+	percent=100
+fi
+
+value=$(( $percent * $max / 100 ))
+
+sudo /usr/lib/gnome-settings-daemon/gsd-backlight-helper --set-brightness $value

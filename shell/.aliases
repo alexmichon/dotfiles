@@ -1,0 +1,29 @@
+# User specific aliases and functions
+alias ls='ls -F --color=auto'
+alias ll='ls -lhF --color=auto'
+alias la='ls -lahF --color=auto'
+alias grep='grep --color=auto'
+alias ggrep='grep -n --exclude={\*.pem,\*.pdf,\*.swn,\*.swo,\*.swp,tags,cscope.out} --color=auto'
+alias mkdir='mkdir -p'
+
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
+
+# Kalray specific
+alias dcbu='cd /work1/amichon/dcbu'
+
+# Local specific
+alias vpn-start='sudo systemctl start openvpn@kalray-amichon.service'
+alias vpn-stop='sudo systemctl stop openvpn@kalray-amichon.service'
+alias vpn-status='systemctl status openvpn@kalray-amichon.service'
+
+# Config files
+alias cfg-sxhkd='vim ~/.config/sxhkd/sxhkdrc'
+alias cfg-bspwm='vim ~/.config/bspwm/bspwmrc'
+alias cfg-polybar='vim ~/.config/polybar/config'
+alias cfg-rofi='vim ~/.config/rofi/config.rasi'
+alias cfg-conky='vim ~/.config/conky'
+alias cfg-alacritty='vim ~/.config/alacritty/alacritty.yml'
+alias cfg-picom='vim ~/.config/picom/picom.conf'

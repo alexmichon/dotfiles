@@ -1,0 +1,13 @@
+#!/bin/bash
+
+spotify=/snap/bin/spotify
+blockify=/usr/local/bin/blockify
+
+if [[ -x $spotify && -x $blockify ]]; then
+	blockify &
+	block_pid=$!
+	$spotify "$@"
+	trap "kill -9 $block_pid" SIGINT SIGTERM EXIT
+else
+	echo "Can not run spotify with blockify"
+fi

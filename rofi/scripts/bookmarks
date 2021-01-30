@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+
+import os
+import re
+import subprocess
+import urllib
+
+HOME = os.getenv("HOME")
+BOOKMARKS_FILE = os.path.join(HOME, ".local/data/bookmarks")
+SEARCH_ENGINES_FILE = os.path.join(HOME, ".local/data/search_engines")
+BROWSER = os.getenv("BROWSER") or "firefox"
+
+ENGINE_PATTERN = r'^(\w):\s+(.*)$'
+URL_PATTERN = r'((http|https):\/\/)?[\w\-\.,@?^=%&:\/~\+#]*'
+
+bookmarks = []
+engines = []
+
+with open(BOOKMARKS_FILE, "r") as f:
+    for line in f.readlines():
+        name, url = line.split(";")
+        name = name.replace('\n', '')
+        uri = url.replace('\n', '')
+        bookmarks.append((name, url))
+
+with open(SEARCH_ENGINES_FILE, "r") as f:
+    for line in f.readlines():
+        name, url = line.split(";")
+        name = name.replace('\n', '')
+        url = url.replace('\n', '')
+        engines.append((name, url))
+
+rofi_input = "\n".join([b[0] for b in bookmarks])
+p = subprocess.Popen("echo \"%s\" | rofi -dmenu -i -p \"Web\"" % rofi_input, shell=True, stdout=subprocess.PIPE)
+p.wait()
+output = p.communicate()[0]
+output = output.replace('\n', '')
+if not output:
+    exit(1)
+
+m = re.match(ENGINE_PATTERN, output)
+if m:
+    matches = [e for e in engines if e[0] == m.group(1)]
+    if matches:
+        engine = matches[0]
+        url = engine[1].replace("%q", urllib.quote_plus(m.group(2)))
+        os.system("%s --new-window %s" % (BROWSER, url))
+        exit(0)
+
+matches = [b for b in bookmarks if b[0] == output]
+if matches:
+    bookmark = matches[0]
+    os.system("%s --new-window %s" % (BROWSER, bookmark[1]))
+    exit(0)
+
+if re.match(URL_PATTERN, output):
+    os.system("%s --new-window %s" % (BROWSER, output))
+    exit(0)
+
+os.system("%s --new-window --search %s" % (BROWSER, output))

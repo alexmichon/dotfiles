@@ -1,0 +1,28 @@
+# This is Git's per-user configuration file.
+[include]
+	path = ~/.creds/git
+[core]
+	excludesfile = ~/.gitignore_global
+[alias]
+	s = status
+	st = status
+	br = branch
+	ck = checkout
+	co = commit
+	last = "!git --no-pager log -1"
+	unstage = reset HEAD --
+	d = diff
+	ds = diff --stat
+	dc = diff --cached
+	a = add
+	aa = add .
+	graph = log --graph --oneline --abbrev-commit --decorate --decorate-refs-exclude='remotes/origin/tmp/*' --all --format=format:'%C(bold cyan)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold green)%d%C(reset)'
+	root = rev-parse --show-toplevel
+	prevdiff = diff HEAD~1..HEAD
+	subptrs = ls-tree -r HEAD
+	staged = diff --cached
+	show-commit = "!git --no-pager log --format=%B -n 1"
+[diff]
+	submodule = log
+[include]
+	path = ~/.gitconfig.local

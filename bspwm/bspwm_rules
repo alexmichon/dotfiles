@@ -1,0 +1,17 @@
+#!/bin/bash
+
+wid="$1"
+class="$2"
+instance=$3
+misc=$4
+
+case "$instance,$class" in
+	*)
+		case $(ps -p "$(xdo pid "$wid")" -o comm= 2>/dev/null) in
+			(spotify)
+				echo "desktop=eDP-1:^8"
+				exit
+				;;
+		esac
+		;;
+esac

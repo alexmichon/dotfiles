@@ -1,0 +1,27 @@
+#!/usr/bin/env python
+
+import os
+import subprocess
+
+HOME = os.getenv("HOME")
+SCRIPTS_DIR = "%s/.config/rofi/scripts" % HOME
+
+SCRIPTS = [
+    ( "Spotify", "spotify" ),
+    ( "Youtube", "youtube_search" ),
+]
+
+rofi_input = "\n".join([s[0] for s in SCRIPTS])
+p = subprocess.Popen("echo \"%s\" | rofi -dmenu -no-custom" % rofi_input, shell=True, stdout=subprocess.PIPE)
+p.wait()
+output = p.communicate()[0]
+
+output = output.replace('\n', '')
+
+matches = [s for s in SCRIPTS if s[0] == output]
+if not matches:
+    exit(1)
+
+script = matches[0]
+
+os.system("sh -c \"%s/%s\"" % (SCRIPTS_DIR, script[1]))

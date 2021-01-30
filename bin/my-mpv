@@ -1,0 +1,22 @@
+#!/bin/bash
+
+rect=$(xrectsel)
+dims=$(echo $rect | cut -f1 -d"+")
+posx=$(echo $rect | cut -f2 -d"+")
+posy=$(echo $rect | cut -f3 -d"+")
+
+width=$(echo $dims | cut -f1 -d"x")
+height=$(echo $dims | cut -f2 -d"x")
+
+echo "width: $width"
+echo "height: $height"
+echo "posx: $posx"
+echo "posy: $posy"
+
+mpv $1 &
+
+wid=$(xdotool search --sync --class mpv)
+echo "wid: $wid"
+xdotool windowmove $wid $posx $posy
+xdotool windowsize $wid $width $height
+

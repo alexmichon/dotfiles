@@ -1,0 +1,18 @@
+#!/bin/bash
+
+BAR=${1:-all}
+
+PID_DIR=/tmp/polybar
+
+if [[ $BAR == "all" ]]; then
+	killall -s USR1 polybar
+else
+	if [[ -f $PID_DIR/$BAR.pid ]]; then
+		pid=$(cat $PID_DIR/$BAR.pid)
+		kill -USR1 $pid
+	fi
+	if [[ -f $PID_DIR/$BAR-external.pid ]]; then
+		pid=$(cat $PID_DIR/$BAR-external.pid)
+		kill -USR1 $pid
+	fi
+fi

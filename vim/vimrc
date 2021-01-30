@@ -1,0 +1,341 @@
+"
+" Options
+"
+set splitright
+set splitbelow
+set incsearch
+set hlsearch
+set tabstop=4
+set shiftwidth=4
+set autoindent
+set wildmenu
+set wildmode=longest:full,full "List and complete longest common string, then complete full match
+set wildignore=cscope.out,cscope.files,cscope.in.out,cscope.po.out,tags,*.o
+set number
+set relativenumber
+set autoread
+set mouse=a
+set ttymouse=sgr
+set ignorecase
+set smartcase
+set noshowmode
+if len($VIM_SWP_DIR)
+	set directory=$VIM_SWP_DIR
+endif
+if len($VIM_UNDO_DIR)
+	set undodir=$VIM_UNDO_DIR
+endif
+set undofile
+set list
+set listchars=tab:>\ 
+set formatoptions+=j
+set lazyredraw
+set completeopt=menuone,noinsert,noselect
+set updatetime=100 "for gitgutter
+set laststatus=2
+
+set iskeyword-=-
+set bs=start,eol,indent
+
+"
+" Mappings
+"
+
+let mapleader=","
+
+" Moving to beginning/end of line
+nnoremap B ^
+nnoremap E $
+
+" Search
+nnoremap <silent> <leader>/ :nohlsearch<cr>
+nnoremap n nzz
+nnoremap N Nzz
+nnoremap # #zz
+nnoremap * *zz
+
+" Moving lines
+vnoremap J :m '>+1<CR>gv=gv
+vnoremap K :m '<-2<CR>gv=gv
+nnoremap j gj
+nnoremap k gk
+
+nnoremap gp `[v`]
+
+" Resize panes
+nnoremap <silent> <C-w>j :resize -5<cr>
+nnoremap <silent> <C-w>k :resize +5<cr>
+nnoremap <silent> <C-w>h :vert resize -5<cr>
+nnoremap <silent> <C-w>l :vert resize +5<cr>
+
+" Mistakes corrections
+nmap ; :
+imap ù *
+imap à )
+imap ç _
+
+" Copy-paste with xclip
+vnoremap <silent> <leader>y :!xclip -f -sel clip<cr>
+noremap <silent> <leader>p :r!xclip -o -sel clip<cr>
+noremap <silent> <F2> :set paste!<cr>
+
+" Tabs
+nnoremap <silent> th :tabfirst<cr>
+nnoremap <silent> tj :tabprev<cr>
+nnoremap <silent> tk :tabnext<cr>
+nnoremap <silent> tl :tablast<cr>
+nnoremap <silent> td :tabclose<cr>
+nnoremap <silent> tm :tabm<cr>
+nnoremap <silent> tn :tabnew<cr>
+nnoremap to :tabnew 
+
+" Tags
+nnoremap <silent> <leader>gg <C-]>zz
+nnoremap <silent> <leader>G <C-t>zz
+nnoremap <silent> <leader>gt :tab split<CR>:exec("tag ".expand("<cword>"))<CR>zz
+nnoremap <silent> <leader>gv :vsp <CR>:exec("tag ".expand("<cword>"))<CR>zz
+
+" Quickfix
+function! ToggleQuickFix()
+    if empty(filter(getwininfo(), 'v:val.quickfix'))
+        copen
+    else
+        cclose
+    endif
+endfunction
+nnoremap <silent> Q :call ToggleQuickFix()<cr>
+nnoremap <silent> <leader>qn :cnext<cr>
+nnoremap <silent> <leader>qp :cprev<cr>
+nnoremap <silent> <leader>qf :cfirst<cr>:cnext<cr>
+nnoremap <silent> <leader>ql :clast<cr>
+
+augroup quickfix
+  autocmd!
+  autocmd FileType qf nnoremap <buffer> <C-t> <C-w><Enter><C-w>T
+  autocmd FileType qf nnoremap <buffer> <C-v> <C-w><Enter><C-w>L
+  autocmd FileType qf wincmd J
+  autocmd FileType qf hi qfFileName ctermfg=DarkGreen ctermbg=None
+  autocmd FileType qf hi qfError ctermfg=DarkRed ctermbg=None
+  autocmd FileType qf hi qfLineNr ctermfg=Yellow ctermbg=None
+augroup END
+
+" Grep
+nnoremap <silent> <leader>S :exec("Rg ".expand("<cword>"))<cr>
+nnoremap <leader>s :Rg 
+
+"
+" Custom functions
+"
+
+function! s:ZoomToggle() abort
+    if exists('t:zoomed') && t:zoomed
+        execute t:zoom_winrestcmd
+        let t:zoomed = 0
+    else
+        let t:zoom_winrestcmd = winrestcmd()
+        resize
+        vertical resize
+        let t:zoomed = 1
+    endif
+endfunction
+command! ZoomToggle call s:ZoomToggle()
+nnoremap <silent> <F8> :ZoomToggle<CR>
+
+function! s:FindCursorToggle() abort
+  if exists('t:findcursor') && t:findcursor
+    set nocursorcolumn
+    hi clear CursorColumn
+    hi clear CursorLine
+    let t:findcursor = 0
+  else
+    set cursorcolumn
+    hi CursorColumn ctermbg=White
+    hi CursorLine ctermbg=White
+    hi Cursor ctermbg=Red
+    let t:findcursor = 1
+  endif
+endfunction
+command! FindCursorToggle call s:FindCursorToggle()
+noremap <silent> <F7> :FindCursorToggle<cr>
+
+" Shell
+" Redirect the output of a Vim or external command into a scratch buffer
+function! Redir(...) abort
+    let l:pref = a:0 == 1 ? a:1 : ""
+    let l:command = input("Command? ", l:pref)
+    new
+    let l:output = system(l:command)
+    let l:lines = split(l:output, "\n")
+    setlocal nobuflisted buftype=nofile bufhidden=wipe noswapfile
+    call setline(1, l:lines)
+    let l:nlines = max([20, len(l:lines)])
+    execute "resize ". l:nlines
+endfunction
+
+function! VRedir(...) abort
+    let command = a:0 == 1 ? a:1 : ""
+    let l:command = input("Command? ", command)
+    vnew
+    let output = system(l:command)
+    setlocal nobuflisted buftype=nofile bufhidden=wipe noswapfile
+endfunction
+
+command! -nargs=? Redir :call Redir(<args>)
+command! -nargs=? VRedir :call VRedir(<args>)
+
+nnoremap !! :Redir<cr>
+nnoremap !g :Redir "git "<cr>
+nnoremap !d :VRedir<cr>git diff<cr>
+
+"
+" File specific
+"
+
+" Open help in vertical split
+autocmd FileType help wincmd L
+
+" Fix some filetypes
+autocmd BufRead,BufNewFile *.h set filetype=c
+autocmd BufNewFile,BufRead Jenkinsfile set filetype=groovy
+
+"
+" Color scheme
+"
+colorscheme myscheme
+syntax on
+
+"
+" Plugins
+"
+set nocompatible
+
+filetype off
+
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+Plugin 'VundleVim/Vundle.vim'
+
+Plugin 'tpope/vim-commentary'
+Plugin 'basilgor/vim-autotags'
+
+" Autopairs
+Plugin 'jiangmiao/auto-pairs'
+let g:AutoPairs = {'(':')','{':'}',"[":"]"}
+
+" Lightline
+Plugin 'itchyny/lightline.vim'
+Plugin 'itchyny/vim-gitbranch'
+let g:lightline = {
+  \  'component': {
+  \    'lineinfo': "%{line('.') . '/' . line('$')}",
+  \  },
+  \  'component_function': {
+  \    'gitbranch': 'gitbranch#name',
+  \    'gitchanges': 'GitChanges', 
+  \  },
+  \  'active': {
+  \    'left': [ [ 'mode', 'paste' ],
+  \              [ 'readonly', 'relativepath', 'modified' ] ],
+  \    'right': [ [ 'percent', 'lineinfo', 'column' ],
+  \               [ 'filetype' ],
+  \               [ 'gitbranch' ],
+  \               [ 'gitchanges' ] ]
+  \  },
+  \  'inactive': {
+  \    'left': [ [ 'mode', 'paste' ],
+  \              [ 'readonly', 'relativepath', 'modified' ] ],
+  \    'right': [ [ 'percent', 'lineinfo', 'column' ],
+  \               [ 'filetype' ] ]
+  \  }
+  \}
+
+function! GitChanges() abort
+  if g:gitgutter_enabled
+    let [a,m,r] = GitGutterGetHunkSummary()
+    return printf('+%d ~%d -%d', a, m, r)
+  else
+    return ''
+  endif
+endfunction
+
+" fzf
+Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
+noremap <C-p> :Files<cr>
+noremap <C-t> :Tags<cr>
+noremap <C-g> :BTags<cr>
+noremap <C-a> :Buffers<cr>
+
+Plugin 'tpope/vim-dispatch'
+let g:dispatch_no_tmux_make=1
+let g:dispatch_no_tmux_start=1
+nnoremap <silent> <leader>M :Make<cr>
+nnoremap <silent> <leader>mm :Make!<cr>
+
+" Integration with tmux
+Plugin 'christoomey/vim-tmux-navigator'
+
+Plugin 'benmills/vimux'
+nnoremap <silent> <leader>V :VimuxRunCommand("clear")<cr>
+nnoremap <silent> <leader>vv :VimuxPromptCommand<cr>
+nnoremap <silent> <leader>vo :VimuxRunLastCommand<cr>
+nnoremap <silent> <leader>vz :VimuxZoomRunner<cr>
+nnoremap <silent> <leader>vd :VimuxCloseRunner<cr>
+nnoremap <leader>vg :VimuxPromptCommand<cr>git 
+
+" Recursively source .lvimrc
+Plugin 'embear/vim-localvimrc'
+let g:localvimrc_ask = 0
+let g:localvimrc_sandbox = 0
+
+" LSP
+Plugin 'prabirshrestha/async.vim'
+Plugin 'prabirshrestha/vim-lsp'
+Plugin 'prabirshrestha/asyncomplete.vim'
+Plugin 'prabirshrestha/asyncomplete-lsp.vim'
+
+inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+
+let g:lsp_diagnostics_enabled = 1
+let g:lsp_diagnostics_float_cursor = 1
+let g:lsp_diagnostics_float_delay = 500
+let g:lsp_textprop_enabled = 1
+let g:lsp_highlight_references_enabled = 0
+let g:lsp_fold_enabled = 0
+let g:lsp_documentation_float = 1
+
+" Snippets
+Plugin 'hrsh7th/vim-vsnip'
+Plugin 'hrsh7th/vim-vsnip-integ'
+
+" Expand
+imap <expr> <Tab>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<Tab>'
+smap <expr> <Tab>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<Tab>'
+
+" Expand or jump
+imap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
+smap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
+
+" Jump forward or backward
+imap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+smap <expr> <Tab>   vsnip#jumpable(1)   ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+imap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+smap <expr> <S-Tab> vsnip#jumpable(-1)  ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+
+" Git
+Plugin 'airblade/vim-gitgutter'
+let g:gitgutter_map_keys = 0
+let g:gitgutter_preview_win_floating = 1
+let g:gitgutter_enabled = 0
+
+nnoremap <silent> <leader>hn :GitGutterNextHunk<cr>
+nnoremap <silent> <leader>hN :GitGutterPrevHunk<cr>
+nnoremap <silent> <leader>hp :GitGutterPreviewHunk<cr>
+nnoremap <silent> <leader>hh :GitGutterToggle<cr>
+
+call vundle#end()
+filetype plugin indent on
+
+" Reload vimrc
+autocmd BufWritePost .vimrc source ~/.vimrc

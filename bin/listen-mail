@@ -1,0 +1,6 @@
+#!/bin/bash
+
+inotifywait -m --format '%w %f' -e close_write --exclude ".lock" /var/mail/ |
+while read -r dir file; do
+	notify-send.py -a "Mail" "New Mail" "You have new mail for ${file} in ${dir}"
+done

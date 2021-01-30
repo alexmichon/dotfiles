@@ -1,0 +1,66 @@
+#!/bin/bash
+
+spotify_running=false
+pidof -x spotify > /dev/null
+if [ "$?" == "0" ]; then
+	spotify_running=true
+fi
+
+spotify_artist() {
+	res=$(echo "$spotify_info" | grep -m 1 "xesam:artist" -A2 | tail -n 2 | sed -n 's/^.*string//p')
+	res="${res%\"*}"
+	res="${res#*\"}"
+	if [[ "$res" == "" ]]; then
+		echo ""
+	else
+		echo "$res"
+	fi
+}
+
+spotify_title() {
+	res=$(echo "$spotify_info" | grep -m 1 "xesam:title" -A1 | tail -n 1 | sed -n 's/^.*string//p')
+	res="${res%\"*}"
+	res="${res#*\"}"
+	echo "$res"
+}
+
+dbus_spotify="dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2"
+
+case "$1" in
+	show)
+		if [ $spotify_running = true ]; then
+			spotify_info=$($dbus_spotify org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:Metadata)
+			artist=$(spotify_artist)
+			title=$(spotify_title)
+			if [ "$artist" == "" ]; then
+				echo "Advertisement"
+			else
+				echo "$artist - $title"
+			fi
+		fi
+		exit
+		;;
+	status)
+		if [ $spotify_running = true ]; then
+			echo $($dbus_spotify org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'PlaybackStatus' | grep -A1 "string" | cut -b26- | cut -d'"' -f1 | egrep -v ^$)
+		fi
+		exit 0
+		;;
+	playpause)
+		if [ $spotify_running = true ]; then
+			dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause 2>&1 > /dev/null
+		fi
+		;;
+	next)
+		if [ $spotify_running = true ]; then
+			dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next 2>&1 > /dev/null
+		fi
+		;;
+	prev)
+		if [ $spotify_running = true ]; then
+			dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous 2>&1 > /dev/null
+		fi
+		;;
+esac
+
+refresh-bar music

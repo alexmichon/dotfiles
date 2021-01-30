@@ -1,0 +1,25 @@
+#!/bin/bash
+
+current=$1
+target=$2
+
+PID_DIR=/tmp/sxhkd
+if [ ! -f $PID_DIR/$current.pid ]; then
+	echo "Invalid mode: $mode"
+	exit 1
+fi
+current_pid=$(cat $PID_DIR/$current.pid)
+
+if [ ! -f $PID_DIR/$target.pid ]; then
+	echo "Invalid mode: $mode"
+	exit 1
+fi
+target_pid=$(cat $PID_DIR/$target.pid)
+
+kill -USR2 $current_pid
+kill -USR2 $target_pid
+
+echo $current > $PID_DIR/old
+echo $target > $PID_DIR/current
+
+refresh-bar sxhkd

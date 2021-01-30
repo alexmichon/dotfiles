@@ -1,0 +1,79 @@
+#!/bin/bash
+
+CAL_DIR=/tmp/calendar
+AT_JOBS_FILE=$CAL_DIR/jobs
+REMINDER_MINUTES_BEFORE=10
+
+clear_calendar_reminders() {
+	if [[ -f $AT_JOBS_FILE ]]; then
+		at_jobs=$(cat $AT_JOBS_FILE)
+		if [[ -n "$at_jobs" ]]; then
+			for job in $at_jobs; do
+				atrm "$job"
+			done
+		fi
+		> $AT_JOBS_FILE
+	fi
+}
+
+schedule_reminder() {
+	job=$(echo "notify-send.py -a \"Calendar\" \"Calendar\" \"$1\"" | at "$2" -M 2>&1 > /dev/null | tail -1 | awk '{print $2}')
+	if [[ ! -d $CAL_DIR ]]; then
+		mkdir -p $CAL_DIR
+	fi
+	if [[ ! -f $AT_JOBS_FILE ]]; then
+		touch $AT_JOBS_FILE
+	fi
+	echo $job >> $AT_JOBS_FILE
+	echo "Scheduling reminder at $2 for $title"
+}
+
+schedule_calendar_reminders() {
+	events=$(khal list today --format="{start-time} {title}"| tail -n +2)
+	if [[ -n "$events" ]]; then
+		while IFS= read -r event; do
+			echo "$event"
+			title=$(echo "$event" | cut -f2- -d" ")
+			t=$(echo "$event" | cut -f1 -d" ")
+			schedule_reminder "$title" $t
+
+			hours=$(echo "$t" | cut -f1 -d":")
+			hours=${hours##0}
+			minutes=$(echo "$t" | cut -f2 -d":")
+			minutes="${minutes##0}"
+			before=$(python - << EOF
+from datetime import *
+date = datetime.today().replace(hour=$hours, minute=$minutes)
+delta = timedelta(minutes=$REMINDER_MINUTES_BEFORE)
+print((date - delta).strftime('%H:%M'))
+EOF
+)
+			schedule_reminder "$title" $before
+		done <<< "$events"
+	fi
+}
+
+sync_calendars() {
+	vdirsyncer -v WARNING sync
+}
+
+print_today_events() {
+	events=$(khal list today 1d --format="{start-time} {title}")
+
+	if [[ $events == No* ]]; then
+		echo "No event today"
+	else
+		echo "$events" | tail -n +2
+	fi
+}
+
+case "$1" in
+	today)
+		print_today_events
+		;;
+	sync)
+		sync_calendars
+		clear_calendar_reminders
+		schedule_calendar_reminders
+		;;
+esac

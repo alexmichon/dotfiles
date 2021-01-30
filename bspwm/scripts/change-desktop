@@ -1,0 +1,12 @@
+#!/bin/sh
+
+dir=$1
+
+current_desktop=$(bspc query --names -M -d focused)
+new_desktop=$(bspc query --names -M -d $dir)
+
+if [ "$current_desktop" != "$new_desktop" ]; then
+	exit
+fi
+
+bspc desktop -f $dir

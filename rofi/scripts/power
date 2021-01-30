@@ -1,0 +1,13 @@
+#!/bin/bash
+
+chosen=$(echo -e "Log Out\nShutdown\nReboot\nSuspend" | rofi -dmenu -p "Power")
+
+if [[ "$chosen" == "Log Out" ]]; then
+	bspc quit
+elif [[ "$chosen" == "Shutdown" ]]; then
+	systemctl poweroff
+elif [[ "$chosen" == "Reboot" ]]; then
+	systemctl reboot
+elif [[ "$chosen" == "Suspend" ]]; then
+	systemctl suspend
+fi

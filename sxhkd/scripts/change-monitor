@@ -1,0 +1,12 @@
+#!/bin/bash
+
+bspc monitor next
+MONITOR=$(bspc query --names -M -d)
+if [[ "$MONITOR" == "eDP-1" ]]; then
+	for bar in "${BARS[@]}"; do
+		pid=$(cat /tmp/polybar/$bar.pid)
+		wid=$(xdotool search --sync $pid)
+		xdotool windowmap $wid
+	done
+else
+fi

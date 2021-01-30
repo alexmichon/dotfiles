@@ -1,0 +1,78 @@
+#!/usr/bin/env python3
+
+import argparse
+import json
+import os
+import subprocess
+import urllib.parse
+
+HOME = os.getenv("HOME")
+CREDS_FILE = "%s/.creds/youtube" % HOME
+API_KEY = None
+YOUTUBE_URL = "https://youtube.com/watch?v={videoId}"
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-c", "--count", type=int, default=20)
+parser.add_argument("query", type=str)
+args = parser.parse_args()
+
+with open(CREDS_FILE, "r") as f:
+    API_KEY = f.read().replace("\n", "")
+
+print(args.query)
+print(API_KEY)
+
+data = {
+    "q": args.query,
+    "type": "video",
+    "part": "snippet",
+    "key": API_KEY,
+    "maxResults": str(args.count),
+}
+
+query = urllib.parse.urlencode(data)
+print(query)
+
+curl = """
+curl 'https://youtube.googleapis.com/youtube/v3/search?{query}' --header 'Accept: application/json'
+""".format(query=query)
+
+p = subprocess.Popen(curl, shell=True, stdout=subprocess.PIPE)
+p.wait()
+output = p.communicate()[0]
+
+data = json.loads(output)
+videos = []
+for item in data["items"]:
+    if item["kind"] != "youtube#searchResult":
+        continue
+
+    if "id" not in item:
+        continue
+
+    if item["id"]["kind"] != "youtube#video":
+        continue
+
+    if "snippet" not in item:
+        continue
+
+    videos.append((str(item["snippet"]["title"]), item["id"]["videoId"]))
+
+rofi_input = "\n".join([v[0] for v in videos])
+p= subprocess.Popen("echo \"%s\" | rofi -dmenu -no-custom" % rofi_input, shell=True, stdout=subprocess.PIPE)
+p.wait()
+output = str(p.communicate()[0].decode()).replace('\n', '')
+
+print(output)
+
+match = None
+for video in videos:
+    if video[0] == output:
+        match = video
+        break
+
+if not match:
+    print("No match found")
+    exit(1)
+
+os.system("my-mpv %s" % YOUTUBE_URL.format(videoId=video[1]))

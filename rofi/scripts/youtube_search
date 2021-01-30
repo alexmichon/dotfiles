@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+
+import os
+import subprocess
+
+HOME = os.getenv("HOME")
+SEARCH_SCRIPT = "%s/src/RofiFtw/suggest youtube" % HOME
+SELECT_SCRIPT = "%s/.config/rofi/scripts/youtube" % HOME
+
+p = subprocess.Popen(SEARCH_SCRIPT, shell=True, stdout=subprocess.PIPE)
+p.wait()
+output = str(p.communicate()[0].decode()).replace('\n', '')
+
+print(output)
+
+os.system("%s \"%s\"" % (SELECT_SCRIPT, output))

@@ -1,0 +1,37 @@
+#!/usr/bin/env python
+
+import os
+import subprocess
+
+HOME = os.getenv("HOME")
+PLAYLISTS_FILE="%s/.local/data/spotify" % HOME
+
+class Playlist(object):
+    def __init__(self, name, uri):
+        self.name = name
+        self.uri = uri
+
+playlists = []
+
+with open(PLAYLISTS_FILE, "r") as f:
+    for line in f.readlines():
+        name, uri = line.split(";")
+        name = name.replace('\n', '')
+        uri = uri.replace('\n', '')
+        playlists.append(Playlist(name, uri))
+
+rofi_input = "\n".join([p.name for p in playlists])
+p = subprocess.Popen("echo \"%s\" | rofi -dmenu -i -no-custom" % rofi_input, shell=True, stdout=subprocess.PIPE)
+p.wait()
+output = p.communicate()[0]
+
+output = output.replace('\n', '')
+matches = [p for p in playlists if p.name == output]
+if not matches:
+    exit(1)
+
+playlist = matches[0]
+
+os.system("dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.OpenUri string:\"%s\"" % playlist.uri)
+
+os.system("refresh-bar music")

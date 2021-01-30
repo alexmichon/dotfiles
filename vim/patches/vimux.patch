@@ -1,0 +1,10 @@
+diff -ruN vimux.original/plugin/vimux.vim vimux/plugin/vimux.vim
+--- vimux.original/plugin/vimux.vim	2020-12-18 16:06:12.455753571 +0100
++++ vimux/plugin/vimux.vim	2020-12-18 16:06:22.850249959 +0100
+@@ -199,5 +199,5 @@
+ endfunction
+ 
+ function! _VimuxHasRunner(index)
+-  return match(_VimuxTmux("list-"._VimuxRunnerType()."s -a"), a:index.":")
++  return match(_VimuxTmux("list-"._VimuxRunnerType()."s -s"), a:index.":")
+ endfunction

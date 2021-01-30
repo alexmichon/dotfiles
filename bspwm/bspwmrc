@@ -1,0 +1,37 @@
+#!/bin/bash
+
+$HOME/.config/sxhkd/launch.sh
+$HOME/.config/polybar/launch.sh
+$HOME/.config/conky/launch.sh
+
+pgrep -x dunst > /dev/null || dunst &
+pgrep -x slack > /dev/null || slack &
+pgrep -x thunderbird > /dev/null || thunderbird &
+pgrep -x birdtray > /dev/null || birdtray &
+pgrep -x mailnag > /dev/null || mailnag &
+pgrep -x listen-mail > /dev/null || listen-mail &
+
+bspc monitor DP-1 -d 1 2 3 4 5 6 7 8
+bspc monitor eDP-1 -d 1 2 3 4 5 6 7 8
+
+bspc config border_width         3
+bspc config focused_border_color "#11ff55"
+bspc config unfocused_border_color "#303030"
+bspc config normal_border_color "#303030"
+bspc config window_gap          8
+
+bspc config focus_follows_pointer false
+
+bspc config split_ratio          0.52
+bspc config borderless_monocle   true
+bspc config gapless_monocle      false
+
+bspc rule -r *
+bspc rule -a Slack desktop='eDP-1:^2' focus=false follow=false
+bspc rule -a Thunderbird desktop='eDP-1:^1'
+bspc rule -a zoom state=floating
+bspc rule -a x2goclient desktop='eDP-1:^4'
+bspc rule -a NXAgent desktop='eDP-1:^4'
+bspc rule -a scratchterm state=floating
+bspc rule -a mpv state=floating sticky=true
+bspc config external_rules_command "$HOME/.config/bspwm/bspwm_rules"

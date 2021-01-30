@@ -1,0 +1,164 @@
+#
+# wm independent hotkeys
+#
+
+# terminal emulator
+super + Return
+	alacritty
+
+# program launcher
+super + @space
+	rofi -modi drun -show drun -show-icons
+
+super + shift + @space
+	rofi -modi run -show run -show-icons
+
+super + shift + o
+	my-rofi media
+
+# browser
+super + {_,shift + }b
+	firefox --{new,private}-window
+
+super + ctrl + b
+	my-rofi bookmarks
+
+# file manager
+super + shift + f
+	alacritty -e nnn
+
+# audio
+XF86Audio{Raise,Lower}Volume
+	my-volume {inc,dec} 5
+
+XF86AudioMute
+	my-volume mute
+
+super + p
+	my-music playpause
+
+super + {_,shift + }n
+	my-music {next,prev}
+
+super + shift + s
+	spotify
+
+# windows
+alt + @Tab:
+	rofi -modi window -show window
+
+# brightness
+XF86MonBrightness{Up,Down}
+	my-brightness {inc,dec} 5
+
+# configs
+super + shift + e
+	my-rofi configs
+
+# make sxhkd reload its configuration files:
+super + Escape
+	pkill -USR1 -f "sxhkd.*default"
+
+# powermenu
+super + F4
+	my-rofi power
+
+#
+# bspwm hotkeys
+#
+
+# quit/restart bspwm
+super + alt + {q,r}
+	bspc {quit,wm -r}
+
+# close and kill
+super + {_,shift + }q
+	bspc node -{c,k}
+
+# alternate between the tiled and monocle layout
+super + m
+	bspc desktop -l next
+
+# send the newest marked node to the newest preselected node
+super + y
+	bspc node newest.marked.local -n newest.!automatic.local
+
+# swap the current node and the biggest window
+super + g
+	bspc node -s biggest.window
+
+#
+# state/flags
+#
+
+# set the window state
+super + {t,shift + t,s,f}
+	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
+
+# set the node flags
+super + ctrl + {m,x,y,z}
+	bspc node -g {marked,locked,sticky,private}
+
+#
+# focus/swap
+#
+
+# focus the node in the given direction
+super + {_,shift + }{h,j,k,l}
+	bspc node -{f,s} {west,south,north,east}
+
+# focus the node for the given path jump
+#super + {p,b,comma,period}
+#	bspc node -f @{parent,brother,first,second}
+
+# focus the next/previous window in the current desktop
+super + {_,shift + }c
+	bspc node -f {next,prev}.local.!hidden.window
+
+# focus the next/previous desktop in the current monitor
+super + bracket{left,right}
+	bspc desktop -f {prev,next}.local
+
+# focus the last node/desktop
+super + {_,shift +}Tab
+	my-bspc change-desktop {next,prev}
+
+# focus the older or newer node in the focus history
+super + {o,i}
+	bspc wm -h off; \
+	bspc node {older,newer} -f; \
+	bspc wm -h on
+
+# focus or send to the given desktop
+super + {ampersand,eacute,quotedbl,apostrophe,parenleft,minus,egrave,underscore}
+	bspc query -M -d | xargs -I id -n 1 bspc desktop -f 'id:^{1-8}'
+
+super + shift + {ampersand,eacute,quotedbl,apostrophe,parenleft,minus,egrave,underscore}
+	bspc query -M -d | xargs -I id -n 1 bspc node -d 'id:^{1-8}' --follow
+
+# focus the next monitor
+super + comma
+	bspc monitor next -f
+
+# move to next monitor
+super + shift + comma
+	bspc node -m next --follow
+
+#
+# preselect
+#
+
+super + u
+	my-sxhkd change-mode default preselect
+
+#
+# move/resize
+#
+
+# expand a window by moving one of its side outward
+super + shift + r
+	my-sxhkd change-mode default resize
+
+# move a floating window
+super + {Left,Down,Up,Right}
+	bspc node -v {-20 0,0 20,0 -20,20 0}

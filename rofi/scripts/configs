@@ -1,0 +1,29 @@
+#!/usr/bin/env python
+
+import os
+import subprocess
+
+HOME = os.getenv("HOME")
+CONFIG_DIR = os.path.join(HOME, ".config")
+CONFIGS = {
+    "alacritty": (os.path.join(CONFIG_DIR, "alacritty"), "alacritty.yml"),
+    "bspwm": (os.path.join(CONFIG_DIR, "bspwm"), "bspwmrc"),
+    "sxhkd": (os.path.join(CONFIG_DIR, "sxhkd"), "sxhkdrc"),
+    "polybar": (os.path.join(CONFIG_DIR, "polybar"), "config"),
+    "conky": (os.path.join(CONFIG_DIR, "conky"), "."),
+    "rofi": (os.path.join(CONFIG_DIR, "rofi"), "config.rasi"),
+    "picom": (os.path.join(CONFIG_DIR, "picom"), "picom.conf"),
+}
+
+rofi_input = "\n".join(sorted(CONFIGS.keys()))
+p = subprocess.Popen("echo \"%s\" | rofi -dmenu -no-sort -no-custom -p \"Config file\"" % rofi_input, shell=True, stdout=subprocess.PIPE)
+p.wait()
+output = p.communicate()[0]
+
+output = output.replace('\n', '')
+config = CONFIGS.get(output, None)
+if not config:
+    exit(1)
+command = 'alacritty --class "scratchterm,scratchterm" --command sh -c \"cd %s; vim %s\"' % (config[0], config[1])
+print(command)
+os.system(command)

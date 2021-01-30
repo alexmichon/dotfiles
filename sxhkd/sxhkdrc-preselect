@@ -1,0 +1,17 @@
+{h,j,k,l}
+	bspc node -p {west,south,north,east}
+
+{ampersand,eacute,quotedbl,apostrophe,parenleft,minus,egrave,underscore,ccedilla}
+	bspc node -o 0.{1-9}
+
+{1-9}
+	bspc node -o 0.{1.9}
+
+Escape
+	bspc node -p cancel
+
+q
+	bspc node -p cancel
+
+Return
+	my-sxhkd change-mode preselect default

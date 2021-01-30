@@ -1,0 +1,15 @@
+diff -ruN vim-vsnip.original/plugin/vsnip.vim vim-vsnip/plugin/vsnip.vim
+--- vim-vsnip.original/plugin/vsnip.vim	2020-12-25 17:52:46.667909264 +0100
++++ vim-vsnip/plugin/vsnip.vim	2020-12-25 17:52:03.756131099 +0100
+@@ -185,7 +185,10 @@
+ augroup vsnip
+   autocmd!
+   autocmd InsertLeave * call s:on_insert_leave()
+-  autocmd TextChanged,TextChangedI,TextChangedP * call s:on_text_changed()
++  autocmd TextChanged,TextChangedI * call s:on_text_changed()
++  if exists('##TextChangedP')
++	  autocmd TextChangedP * call s:on_text_changed()
++  endif
+   autocmd BufWritePost * call s:on_buf_write_post()
+ augroup END
+ 

@@ -1,0 +1,23 @@
+#!/bin/bash
+
+NOTES_DIR=$HOME/Documents/notes
+
+list_notes() {
+	local all_notes=""
+	for file in $(ls $NOTES_DIR); do
+		file=$(echo "$file" | cut -f 1 -d '.')
+		all_notes="$all_notes$file\n"
+		echo $file
+	done
+}
+
+if [ -n "$1" ]; then
+	if [ "$1" == "-l" ]; then
+		echo "$(list_notes)"
+	else
+		vim $NOTES_DIR/$1.txt
+	fi
+	exit 0
+else
+	my-rofi notes
+fi

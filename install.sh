@@ -48,6 +48,7 @@ blockify \
 numlockx \
 xss-lock \
 xsecurelock \
+inotifywait \
 )
 
 check_dependencies() {

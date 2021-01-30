@@ -121,6 +121,8 @@ install_x11() {
 
 	log "* Linking $install_dir/.xinitrc"
 	do_ln $dotfiles_dir/x11/xinitrc $install_dir/.xinitrc
+	log "* Linking $install_dir/.Xresources"
+	do_ln $dotfiles_dir/x11/Xresources $install_dir/.Xresources
 }
 
 install_git() {

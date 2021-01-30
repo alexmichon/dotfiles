@@ -1,0 +1,29 @@
+!--------!
+! GLOBAL !
+!--------!
+*.foreground: #d3d0c8
+*.background: #000000
+*.cursorColor: #00aa00
+
+*.font: Ubuntu Mono Nerd Font:pixelsize=10:antialias=true:autohint=false 
+
+*.color0:  #000000
+*.color1:  #ff4d4d
+*.color2:  #1aff8c
+*.color3:  #ffff33
+*.color4:  #662aff
+*.color5:  #ff00aa
+*.color6:  #00ffff
+*.color7:  #c5c8c6
+*.color8:  #606060
+*.color9:  #dd1111
+*.color10: #11ee11
+*.color11: #f7f527
+*.color12: #11a6da
+*.color13: #ff00dd
+*.color14: #33ffff
+*.color15: #eaeaea
+
+Xcursor.size: 10
+
+Xft.dpi: 96

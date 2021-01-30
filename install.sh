@@ -30,7 +30,7 @@ bspwm \
 sxhkd \
 alacritty \
 polybar \
-conky \vimrcvimrcvimrc
+conky \
 picom \
 vdirsyncer \
 khal \
@@ -44,7 +44,10 @@ ctags \
 cscope \
 firefox \
 spotify \
-blockify p
+blockify \
+numlockx \
+xss-lock \
+xsecurelock \
 )
 
 check_dependencies() {

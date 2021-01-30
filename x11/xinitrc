@@ -1,5 +1,6 @@
 #!/bin/bash
 
+numlockx &
 setxkbmap -option caps:escape
 picom &
 
@@ -12,6 +13,13 @@ xrdb $HOME/.Xresources
 xset +fp $HOME/.local/share/fonts
 xset fp rehash
 xsetroot -cursor_name left_ptr
+
+xset s 300 5
+if [[ -f /usr/lib/xsecurelock/dimmer ]]; then
+	xss-lock -n /urs/lib/xsecurelock/dimmer -l -- xsecurelock &
+elif [[ -f /usr/local/libexec/xsecurelock/dimmer ]]; then
+	xss-lock -n /urs/local/libexec/xsecurelock/dimmer -l -- xsecurelock &
+fi
 
 feh --bg-scale $HOME/Pictures/wallpaper.jpg
 

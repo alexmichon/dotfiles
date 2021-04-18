@@ -1,5 +1,7 @@
 #!/bin/bash
 
+POLYBAR_DIR=$HOME/.config/polybar
+
 killall -q polybar
 
 while pgrep -u $UID -x polybar > /dev/null; do sleep 1; done
@@ -26,16 +28,23 @@ fi
 
 rm -r $PID_DIR
 mkdir -p $PID_DIR
-for bar in "${BARS[@]}"; do
-	INTERFACE=$iface MONITOR=$primary polybar -r $bar &
-	echo "$!" > $PID_DIR/$bar.pid
-done
+
+if [ -d $POLYBAR_DIR/$(hostname) ]; then
+	for bar in "${BARS[@]}"; do
+		INTERFACE=$iface MONITOR=$primary polybar -r $bar-$(hostname) -c $POLYBAR_DIR/$(hostname)/config &
+		echo "$!" > $PID_DIR/$bar.pid
+	done
+else
+	for bar in "${BARS[@]}"; do
+		INTERFACE=$iface MONITOR=$primary polybar -r $bar -c $POLYBAR_DIR/config &
+		echo "$!" > $PID_DIR/$bar.pid
+	done
+fi
 
 external=$(echo "$monitors" | grep -v "^e" | head -1)
-echo "$external"
 if [[ -n $external ]]; then
 	for bar in "${BARS[@]}"; do
-		INTERFACE=$iface MONITOR=$external polybar -r $bar-external > $LOG_DIR/$bar.log 2>&1 &
+		INTERFACE=$iface MONITOR=$external polybar -r $bar-external -c $HOME/.config/polybar/external/config > $LOG_DIR/$bar.log 2>&1 &
 		echo "$!" > $PID_DIR/$bar-external.pid
 	done
 fi

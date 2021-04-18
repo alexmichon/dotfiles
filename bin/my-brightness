@@ -40,5 +40,5 @@ value=$(( $percent * $max / 100 ))
 if [[ "$release" == "Ubuntu" ]]; then
 	sudo /usr/lib/gnome-settings-daemon/gsd-backlight-helper --set-brightness $value
 else
-	sudo echo "$value" > /sys/class/backlight/intel_backlight/brightness
+	echo "$value" > /sys/class/backlight/intel_backlight/brightness
 fi

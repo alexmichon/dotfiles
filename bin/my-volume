@@ -31,4 +31,8 @@ case "$1" in
 		pactl set-sink-mute $sink toggle
 		notify-send.py -i /usr/share/icons/Humanity/status/24/audio-volume-muted.png "muted" -a "Volume" -r $VOLUME_NOTIF_ID
 		;;
+	*)
+		echo "Invalid argument: $1"
+		exit 1
+		;;
 esac

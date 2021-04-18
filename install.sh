@@ -338,6 +338,12 @@ install_polybar() {
 	do_ln $dotfiles_dir/polybar/config $install_dir/.config/polybar/config
 	do_ln $dotfiles_dir/polybar/launch.sh $install_dir/.config/polybar/launch.sh
 
+	subdirs=("alex" "external")
+	for subdir in "${subdirs[@]}"; do
+		mkdir -p $install_dir/.config/polybar/$subdir
+		do_ln $dotfiles_dir/polybar/$subdir/config $install_dir/.config/polybar/$subdir/config
+	done
+
 	if [ -d $dotfiles_dir/polybar/scripts ]; then
 		mkdir -p $install_dir/.config/polybar/scripts
 		for f in $(ls $dotfiles_dir/polybar/scripts); do

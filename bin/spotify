@@ -1,7 +1,13 @@
 #!/bin/bash
 
-spotify=/snap/bin/spotify
-blockify=/usr/local/bin/blockify
+release=$(lsb_release -sd)
+if [[ "$release" == "Ubuntu" ]]; then
+	spotify=/snap/bin/spotify
+	blockify=/usr/local/bin/blockify
+else
+	spotify=/usr/bin/spotify
+	blockify=/usr/bin/blockify
+fi
 
 if [[ -x $spotify && -x $blockify ]]; then
 	blockify &

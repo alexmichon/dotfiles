@@ -497,10 +497,6 @@ offset-x = 1%
 
 modules-center = power
 
-[bar/power-external]
-inherit = bar/power
-width = 2%
-
 [bar/wm]
 inherit = bar/base
 
@@ -508,11 +504,6 @@ width = 14%
 offset-x = 5%
 
 modules-center = bspwm
-
-[bar/wm-external]
-inherit = bar/wm
-width = 10%
-offset-x = 4%
 
 [bar/music]
 inherit = bar/base
@@ -532,11 +523,6 @@ module-margin-right = 1
 
 modules-left = music-prev music-play music-next music
 
-[bar/music-external]
-inherit = bar/music
-width = 30%
-offset-x = 15%
-
 [bar/sxhkd]
 inherit = bar/base
 
@@ -547,12 +533,6 @@ modules-center = sxhkd
 
 width = 10%
 offset-x = 45%
-
-[bar/sxhkd-external]
-inherit = bar/sxhkd
-
-width = 8%
-offset-x = 46%
 
 [bar/tray]
 inherit = bar/base
@@ -570,9 +550,6 @@ offset-x = 79%
 
 modules-right = empty
 
-[bar/tray-external]
-inherit = bar/base
-
 [bar/icons]
 inherit = bar/base
 
@@ -587,12 +564,6 @@ module-margin-right = 1
 padding-left = 2
 padding-right = 2
 
-[bar/icons-external]
-inherit = bar/icons
-width = 5%
-offset-x = 89%
-tray-position = none
-
 [bar/date]
 inherit = bar/base
 
@@ -601,10 +572,5 @@ width = 5%
 offset-x = 94%
 
 modules-center = date
-
-[bar/date-external]
-inherit = bar/date
-width = 4%
-offset-x = 95%
 
 ; vim:ft=dosini

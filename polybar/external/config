@@ -1,0 +1,56 @@
+;==========================================================
+;
+;
+;   ██████╗  ██████╗ ██╗  ██╗   ██╗██████╗  █████╗ ██████╗
+;   ██╔══██╗██╔═══██╗██║  ╚██╗ ██╔╝██╔══██╗██╔══██╗██╔══██╗
+;   ██████╔╝██║   ██║██║   ╚████╔╝ ██████╔╝███████║██████╔╝
+;   ██╔═══╝ ██║   ██║██║    ╚██╔╝  ██╔══██╗██╔══██║██╔══██╗
+;   ██║     ╚██████╔╝███████╗██║   ██████╔╝██║  ██║██║  ██║
+;   ╚═╝      ╚═════╝ ╚══════╝╚═╝   ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝
+;
+;
+;   To learn more about how to configure Polybar
+;   go to https://github.com/polybar/polybar
+;
+;   The README contains a lot of information
+;
+;==========================================================
+
+[section/base]
+include-file = $HOME/.config/polybar/config
+
+[bar/power-external]
+inherit = bar/power
+width = 2%
+
+[bar/wm-external]
+inherit = bar/wm
+width = 10%
+offset-x = 4%
+
+[bar/music-external]
+inherit = bar/music
+width = 30%
+offset-x = 15%
+
+[bar/sxhkd-external]
+inherit = bar/sxhkd
+
+width = 8%
+offset-x = 46%
+
+[bar/tray-external]
+inherit = bar/base
+
+[bar/icons-external]
+inherit = bar/icons
+width = 5%
+offset-x = 89%
+tray-position = none
+
+[bar/date-external]
+inherit = bar/date
+width = 4%
+offset-x = 95%
+
+; vim:ft=dosini

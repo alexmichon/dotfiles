@@ -19,36 +19,38 @@
 [section/base]
 include-file = $HOME/.config/polybar/config
 
-[bar/power-external]
+[bar/power-external-alex]
 inherit = bar/power
 width = 2%
 
-[bar/wm-external]
+[bar/wm-external-alex]
 inherit = bar/wm
 width = 10%
 offset-x = 4%
 
-[bar/music-external]
+[bar/music-external-alex]
 inherit = bar/music
 width = 30%
 offset-x = 15%
 
-[bar/sxhkd-external]
+[bar/sxhkd-external-alex]
 inherit = bar/sxhkd
 
 width = 8%
 offset-x = 46%
 
-[bar/tray-external]
+[bar/tray-external-alex]
 inherit = bar/base
 
-[bar/icons-external]
+[bar/icons-external-alex]
 inherit = bar/icons
-width = 5%
-offset-x = 89%
+width = 8%
+offset-x = 86%
 tray-position = none
 
-[bar/date-external]
+modules-center = pulseaudio wlan eth vpn battery updates
+
+[bar/date-external-alex]
 inherit = bar/date
 width = 4%
 offset-x = 95%

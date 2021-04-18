@@ -44,9 +44,11 @@ inherit = bar/base
 
 [bar/icons-alex]
 inherit = bar/icons
-width = 5%
-offset-x = 89%
+width = 8%
+offset-x = 86%
 tray-position = none
+
+modules-center = pulseaudio wlan eth vpn battery updates
 
 [bar/date-alex]
 inherit = bar/date

@@ -42,9 +42,9 @@ else
 fi
 
 external=$(echo "$monitors" | grep -v "^e" | head -1)
-if [[ -n $external ]]; then
+if [[ -n $external && -d $POLYBAR_DIR/external-$(hostname) ]]; then
 	for bar in "${BARS[@]}"; do
-		INTERFACE=$iface MONITOR=$external polybar -r $bar-external -c $HOME/.config/polybar/external/config > $LOG_DIR/$bar.log 2>&1 &
+		INTERFACE=$iface MONITOR=$external polybar -r $bar-external-$(hostname) -c $POLYBAR_DIR/external-$(hostname)/config > $LOG_DIR/$bar.log 2>&1 &
 		echo "$!" > $PID_DIR/$bar-external.pid
 	done
 fi

@@ -469,6 +469,16 @@ type = custom/script
 exec = $HOME/.config/polybar/scripts/sxhkd.sh
 interval = 99999
 
+[module/updates]
+type = custom/script
+exec = $HOME/.config/polybar/scripts/updates.sh
+interval = 60
+
+[module/vpn]
+type = custom/script
+exec = $HOME/.config/polybar/scripts/vpn.sh
+interval = 10
+
 [module/sep]
 type = custom/text
 content = |
@@ -556,7 +566,7 @@ inherit = bar/base
 width = 7%
 offset-x = 86%
 
-modules-left = pulseaudio wlan eth battery
+modules-center = pulseaudio wlan eth battery
 
 module-margin-left = 1
 module-margin-right = 1

@@ -37,8 +37,14 @@ XF86AudioMute
 super + p
 	my-music playpause
 
+XF86AudioPlay
+	my-music playpause
+
 super + {_,shift + }n
 	my-music {next,prev}
+
+XF86Audio{Prev,Next}
+	my-music {prev,next}
 
 super + shift + s
 	spotify

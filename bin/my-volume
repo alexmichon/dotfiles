@@ -18,6 +18,11 @@ case "$1" in
 		exit
 		;;
 	inc)
+		output=$(pactl list sinks | sed -n "/^Sink #$sink/,/^Sink #/p")
+		muted=$(echo "$output" | grep '^[[:space:]]Mute:' | awk '{print $2}')
+		if [[ "$muted" == "yes" ]]; then
+			pactl set-sink-mute $sink toggle
+		fi
 		pactl set-sink-volume $sink +$2%
 		volume="$(my-volume show)%"
 		notify-send.py -i /usr/share/icons/Humanity/status/24/audio-volume-high.png "$volume" -a "Volume" -r $VOLUME_NOTIF_ID

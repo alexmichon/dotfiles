@@ -1,0 +1,38 @@
+#!/bin/sh
+
+CREDS_FILE=$HOME/.creds/pia
+username=$(cat $CREDS_FILE | head -1)
+password=$(cat $CREDS_FILE | tail -1)
+
+PIA_DIR="$HOME/vpn/PIA/manual-connections-2.0.0"
+
+change_vpn() {
+	local choice="$1"
+	cd $PIA_DIR
+	sudo PIA_USER=$username PIA_PASS=$password PIA_PF=true PIA_DNS=true DISABLE_IPV6=yes PREFERRED_REGION=$choice VPN_PROTOCOL=wireguard ./run_setup.sh
+}
+
+case "$1" in
+	"status")
+		ip addr show pia up > /dev/null 2>&1
+		if [ $? -eq 0 ]; then
+			echo "up"
+		else
+			echo "down"
+		fi
+		;;
+	"off")
+		;;
+	"change")
+		change_vpn "$2"
+		;;
+	"menu")
+		choice=$(my-rofi vpn)
+		change_vpn "$choice"
+        ;;
+	*)
+		echo "Invalid argument: $1"
+		exit 1
+		;;
+esac
+

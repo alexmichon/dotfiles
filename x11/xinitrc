@@ -14,7 +14,7 @@ xset +fp $HOME/.local/share/fonts
 xset fp rehash
 xsetroot -cursor_name left_ptr
 
-xset s 300 5
+xset s 600 5
 if [[ -f /usr/lib/xsecurelock/dimmer ]]; then
 	xss-lock -n /urs/lib/xsecurelock/dimmer -l -- xsecurelock &
 elif [[ -f /usr/local/libexec/xsecurelock/dimmer ]]; then

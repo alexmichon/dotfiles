@@ -3,10 +3,32 @@
 battery=BAT0
 path="/sys/class/power_supply/$battery"
 
+get_charge_now() {
+	if [ -f "$path/charge_now" ]; then
+		cat $path/charge_now
+	elif [ -f "$path/energy_now" ]; then
+		cat $path/energy_now
+	else
+		echo "Unable to get current charge"
+		exit 1
+	fi
+}
+
+get_charge_full() {
+	if [ -f "$path/charge_full" ]; then
+		cat $path/charge_full
+	elif [ -f "$path/energy_full" ]; then
+		cat $path/energy_full
+	else
+		echo "Unable to get full charge"
+		exit 1
+	fi
+}
+
 case "$1" in
 	percent)
-		capacity=$(cat "$path/charge_now")
-		fullcapacity=$(cat "$path/charge_full")
+		capacity=$(get_charge_now)
+		fullcapacity=$(get_charge_full)
 		percent=$(bc <<< "scale=2;$capacity/$fullcapacity*100")
 		echo "${percent%%.*}"
 		;;

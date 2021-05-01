@@ -40,7 +40,7 @@ width = 8%
 offset-x = 46%
 
 [bar/tray-alex]
-inherit = bar/base
+inherit = bar/tray
 
 [bar/icons-alex]
 inherit = bar/icons

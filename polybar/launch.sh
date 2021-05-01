@@ -31,12 +31,12 @@ mkdir -p $PID_DIR
 
 if [ -d $POLYBAR_DIR/$(hostname) ]; then
 	for bar in "${BARS[@]}"; do
-		INTERFACE=$iface MONITOR=$primary polybar -r $bar-$(hostname) -c $POLYBAR_DIR/$(hostname)/config &
+		INTERFACE=$iface MONITOR=$primary polybar -r $bar-$(hostname) -c $POLYBAR_DIR/$(hostname)/config > $LOG_DIR/$bar-main.log &
 		echo "$!" > $PID_DIR/$bar.pid
 	done
 else
 	for bar in "${BARS[@]}"; do
-		INTERFACE=$iface MONITOR=$primary polybar -r $bar -c $POLYBAR_DIR/config &
+		INTERFACE=$iface MONITOR=$primary polybar -r $bar -c $POLYBAR_DIR/config > $LOG_DIR/$bar-main.log &
 		echo "$!" > $PID_DIR/$bar.pid
 	done
 fi
@@ -44,7 +44,7 @@ fi
 external=$(echo "$monitors" | grep -v "^e" | head -1)
 if [[ -n $external && -d $POLYBAR_DIR/external-$(hostname) ]]; then
 	for bar in "${BARS[@]}"; do
-		INTERFACE=$iface MONITOR=$external polybar -r $bar-external-$(hostname) -c $POLYBAR_DIR/external-$(hostname)/config > $LOG_DIR/$bar.log 2>&1 &
+		INTERFACE=$iface MONITOR=$external polybar -r $bar-external-$(hostname) -c $POLYBAR_DIR/external-$(hostname)/config > $LOG_DIR/$bar-external.log 2>&1 &
 		echo "$!" > $PID_DIR/$bar-external.pid
 	done
 fi

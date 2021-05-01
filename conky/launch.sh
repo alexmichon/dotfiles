@@ -1,23 +1,23 @@
 #!/bin/bash
 
+CONKY_DIR=$HOME/.config/conky
+
 killall -q conky
 
 while pgrep -u $UID -x conky > /dev/null; do sleep 1; done
 
-WINDOWS=( \
-"date" \
-"sidebar" \
-"calendar-icon" \
-"calendar" \
-"stock-icon" \
-"stock" \
-"weather" \
-)
-
 LOG_DIR="$HOME/.log/conky"
 mkdir -p $LOG_DIR
 
-for window in "${WINDOWS[@]}"; do
-	conky -c $HOME/.config/conky/$window.conf > $LOG_DIR/$window.log 2>&1 &
-	sleep .2
+INSTANCE_DIR=$CONKY_DIR/$(hostname)
+if [ ! -d $INSTANCE_DIR ]; then
+	echo "Directory $INSTANCE_DIR doesn't exist"
+	exit 1
+fi
+
+for file in $(ls $INSTANCE_DIR/*); do
+	echo $file
+	instance=$(basename "$file" ".conf")
+	conky -c $file > $LOG_DIR/$instance.log 2>&1 &
+	sleep .5
 done

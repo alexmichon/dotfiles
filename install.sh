@@ -373,6 +373,14 @@ install_conky() {
 			do_ln $dotfiles_dir/conky/scripts/$f $install_dir/.config/conky/scripts/$f
 		done
 	fi
+
+	if [ -d $dotfiles_dir/conky/$(hostname) ]; then
+		mkdir -p $install_dir/.config/conky/$(hostname)
+		for f in $(ls $dotfiles_dir/conky/$(hostname)); do
+			log "* Linking $install_dir/.config/conky/$(hostname)/$f"
+			do_ln $dotfiles_dir/conky/$(hostname)/$f $install_dir/.config/conky/$(hostname)/$f
+		done
+	fi
 }
 
 install_all() {

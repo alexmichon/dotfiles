@@ -7,6 +7,7 @@ import urllib
 
 HOME = os.getenv("HOME")
 BOOKMARKS_FILE = os.path.join(HOME, ".local/data/bookmarks")
+BOOKMARKS_LOCAL_FILE = os.path.join(HOME, ".local/data/bookmarks.local")
 SEARCH_ENGINES_FILE = os.path.join(HOME, ".local/data/search_engines")
 BROWSER = os.getenv("BROWSER") or "firefox"
 
@@ -16,12 +17,21 @@ URL_PATTERN = r'((http|https):\/\/)?[\w\-\.,@?^=%&:\/~\+#]*'
 bookmarks = []
 engines = []
 
-with open(BOOKMARKS_FILE, "r") as f:
-    for line in f.readlines():
-        name, url = line.split(";")
-        name = name.replace('\n', '')
-        uri = url.replace('\n', '')
-        bookmarks.append((name, url))
+if os.path.exists(BOOKMARKS_FILE):
+    with open(BOOKMARKS_FILE, "r") as f:
+        for line in f.readlines():
+            name, url = line.split(";")
+            name = name.replace('\n', '')
+            uri = url.replace('\n', '')
+            bookmarks.append((name, url))
+
+if os.path.exists(BOOKMARKS_LOCAL_FILE):
+    with open(BOOKMARKS_LOCAL_FILE, "r") as f:
+        for line in f.readlines():
+            name, url = line.split(";")
+            name = name.replace('\n', '')
+            uri = url.replace('\n', '')
+            bookmarks.append((name, url))
 
 with open(SEARCH_ENGINES_FILE, "r") as f:
     for line in f.readlines():

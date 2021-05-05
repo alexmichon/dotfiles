@@ -57,6 +57,13 @@ alt + @Tab:
 XF86MonBrightness{Up,Down}
 	my-brightness {inc,dec} 5
 
+# screenshot
+Print
+	maim | xclip -selection clipboard -t image/png
+
+super + Print
+	maim -s | xclip -selection clipboard -t image/png
+
 # configs
 super + shift + e
 	my-rofi configs

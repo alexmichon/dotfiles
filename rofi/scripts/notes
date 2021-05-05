@@ -15,14 +15,14 @@ list_notes() {
 rofi_notes() {
 	local all_notes=$(list_notes)
 
-	all_notes="${all_notes::-2}"
+	all_notes="${all_notes}"
 
 	local choice=$(echo -e "$all_notes" | rofi -dmenu -p "Note")
 	if [[ -z $choice ]]; then
 		exit 0
 	fi
 
-	$TERMINAL --class "scratchterm,scratchterm" --command $(which vim) $NOTES_DIR/$choice.txt
+	$TERMINAL --class "scratchterm,scratchterm" --command bash -c "vim $NOTES_DIR/$choice.txt"
 }
 
 rofi_notes

@@ -7,7 +7,7 @@ HOME = os.getenv("HOME")
 SCRIPTS_DIR = "%s/.config/rofi/scripts" % HOME
 
 SCRIPTS = [
-    ( "Spotify", "spotify" ),
+    ( "Spotify", "spotify_playlists" ),
     ( "Youtube", "youtube_search" ),
 ]
 

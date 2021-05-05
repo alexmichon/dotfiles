@@ -29,7 +29,7 @@ schedule_reminder() {
 }
 
 schedule_calendar_reminders() {
-	events=$(khal list today --format="{start-time} {title}"| tail -n +2)
+	events=$(khal list today today --format="{start-time} {title}"| tail -n +2)
 	if [[ -n "$events" ]]; then
 		while IFS= read -r event; do
 			echo "$event"

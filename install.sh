@@ -49,6 +49,7 @@ numlockx \
 xss-lock \
 xsecurelock \
 inotifywait \
+maim \
 )
 
 check_dependencies() {
@@ -166,6 +167,7 @@ install_vim() {
 	fi
 
 	if [ -d $dotfiles_dir/vim/ftplugin ]; then
+		mkdir -p $install_dir/.vim/ftplugin
 		for f in $(ls $dotfiles_dir/vim/ftplugin); do
 			log "* Linking $install_dir/.vim/ftplugin/$f"
 		done

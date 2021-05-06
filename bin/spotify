@@ -1,7 +1,7 @@
 #!/bin/bash
 
 release=$(lsb_release -sd)
-if [[ "$release" == "Ubuntu" ]]; then
+if [[ "$release" == Ubuntu* ]]; then
 	spotify=/snap/bin/spotify
 	blockify=/usr/local/bin/blockify
 else

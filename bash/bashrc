@@ -118,7 +118,7 @@ fi
 
 alias vi='vim'
 
-files=( "aliases" "exports" "functions" "zsh_promp" )
+files=( "aliases" "exports" "functions" )
 for f in "${files[@]}"; do
 	if [[ -f "$HOME/.$f" ]]; then
 		source "$HOME/.$f"

@@ -10,7 +10,7 @@ set shiftwidth=4
 set autoindent
 set wildmenu
 set wildmode=longest:full,full "List and complete longest common string, then complete full match
-set wildignore=cscope.out,cscope.files,cscope.in.out,cscope.po.out,tags,*.o
+set wildignore=cscope.out,cscope.files,cscope.in.out,cscope.po.out,tags,*.o,*.d
 set number
 set relativenumber
 set autoread
@@ -20,10 +20,10 @@ set ignorecase
 set smartcase
 set noshowmode
 if len($VIM_SWP_DIR)
-	set directory=$VIM_SWP_DIR
+  set directory=$VIM_SWP_DIR
 endif
 if len($VIM_UNDO_DIR)
-	set undodir=$VIM_UNDO_DIR
+  set undodir=$VIM_UNDO_DIR
 endif
 set undofile
 set list
@@ -70,9 +70,11 @@ nnoremap <silent> <C-w>l :vert resize +5<cr>
 
 " Mistakes corrections
 nmap ; :
+nmap § /
 imap ù *
 imap à )
 imap ç _
+imap § /
 
 " Copy-paste with xclip
 vnoremap <silent> <leader>y :!xclip -f -sel clip<cr>
@@ -158,6 +160,28 @@ endfunction
 command! FindCursorToggle call s:FindCursorToggle()
 noremap <silent> <F7> :FindCursorToggle<cr>
 
+function! s:CopyModeToggle() abort
+  if exists('t:my_copy_mode') && t:my_copy_mode
+    set number
+    set relativenumber
+    set list
+        execute t:zoom_winrestcmd
+    let t:my_copy_mode = 0
+    let t:zoomed = 0
+  else
+    set nonumber
+    set norelativenumber
+    set nolist
+        let t:zoom_winrestcmd = winrestcmd()
+        resize
+        vertical resize
+    let t:my_copy_mode = 1
+    let t:zoomed = 1
+  endif
+endfunction
+command! CopyModeToggle call s:CopyModeToggle()
+noremap <silent> <F9> :CopyModeToggle<cr>
+
 " Shell
 " Redirect the output of a Vim or external command into a scratch buffer
 function! Redir(...) abort
@@ -180,8 +204,8 @@ function! VRedir(...) abort
     setlocal nobuflisted buftype=nofile bufhidden=wipe noswapfile
 endfunction
 
-command! -nargs=? Redir :call Redir(<args>)
-command! -nargs=? VRedir :call VRedir(<args>)
+command -nargs=? Redir :call Redir(<args>)
+command -nargs=? VRedir :call VRedir(<args>)
 
 nnoremap !! :Redir<cr>
 nnoremap !g :Redir "git "<cr>
@@ -197,6 +221,7 @@ autocmd FileType help wincmd L
 " Fix some filetypes
 autocmd BufRead,BufNewFile *.h set filetype=c
 autocmd BufNewFile,BufRead Jenkinsfile set filetype=groovy
+autocmd BufNewFile,BufRead Vagrantfile setf ruby
 
 "
 " Color scheme
@@ -263,6 +288,7 @@ endfunction
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
 noremap <C-p> :Files<cr>
+noremap <C-q> :GFiles<cr>
 noremap <C-t> :Tags<cr>
 noremap <C-g> :BTags<cr>
 noremap <C-a> :Buffers<cr>

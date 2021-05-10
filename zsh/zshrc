@@ -31,14 +31,17 @@ bindkey '^[j' down-history
 bindkey '^a' beginning-of-line
 bindkey '^e' end-of-line
 
+function run-again() {
+	zle up-history
+	zle accept-line
+}
+zle -N run-again
+bindkey '^o' run-again
+
 # Plugins
 [[ -d "$HOME/.zsh/zsh-autosuggestions" ]] && source $HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 [[ -d "$HOME/.zsh/zsh-syntax-highlighting" ]] && source $HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-if [[ -n "$SSH_CONNECTION" ]]; then
-	START_TMUX=true
-fi
 
 # Source files
 files=( "aliases" "exports" "functions" "zsh_prompt" )

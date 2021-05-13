@@ -25,7 +25,7 @@ gauge = {
 -- CPU rings
 {
     name='cpu',                    arg='cpu0',                  max_value=100,
-    x=80,                          y=200,
+    x=80,                          y=180,
     graph_radius=30,
     graph_thickness=10,
     graph_start_angle=225,
@@ -47,7 +47,7 @@ gauge = {
 -- Memory rings
 {
     name='memperc',                arg='',                      max_value=100,
-    x=190,                         y=200,
+    x=190,                         y=180,
     graph_radius=30,
     graph_thickness=10,
     graph_start_angle=225,

@@ -223,7 +223,8 @@ label = %percentage_used%%
 
 [module/wlan]
 type = internal/network
-interface = ${env:INTERFACE:wlo1}
+;interface = ${env:INTERFACE:wlo1}
+interface = ${root.interface}
 interval = 3.0
 
 format-connected = <label-connected>

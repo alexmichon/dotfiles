@@ -48,6 +48,8 @@ width = 8%
 offset-x = 86%
 tray-position = none
 
+interface = wlp3s0
+
 modules-center = pulseaudio wlan eth vpn battery updates
 
 [bar/date-alex]

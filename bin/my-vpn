@@ -21,7 +21,8 @@ case "$1" in
 			echo "down"
 		fi
 		;;
-	"off")
+	"off"|"stop")
+		wg-quick down pia
 		;;
 	"change")
 		change_vpn "$2"

@@ -1,5 +1,6 @@
 tags
 cscope*
+ncscope*
 *.swp
 *.swo
 *.swn
@@ -7,3 +8,5 @@ cscope*
 compile_commands.json
 .ccls
 .ccls-cache
+.my-scripts
+.gdb_history

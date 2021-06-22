@@ -13,7 +13,3 @@ export VIM_SWP_DIR="$VIM_TMP_DIR/swpdir"
 export VIM_UNDO_DIR="$VIM_TMP_DIR/undodir"
 
 [[ -f "$HOME/.exports.local" ]] && source "$HOME/.exports.local"
-
-[[ ! -d "$VIM_TMP_DIR" ]] && mkdir -p $VIM_TMP_DIR
-[[ ! -d "$VIM_SWP_DIR" ]] && mkdir -p $VIM_SWP_DIR
-[[ ! -d "$VIM_UNDO_DIR" ]] && mkdir -p $VIM_UNDO_DIR

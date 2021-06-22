@@ -19,11 +19,16 @@ set ttymouse=sgr
 set ignorecase
 set smartcase
 set noshowmode
+set nocompatible
 if len($VIM_SWP_DIR)
   set directory=$VIM_SWP_DIR
 endif
 if len($VIM_UNDO_DIR)
   set undodir=$VIM_UNDO_DIR
+endif
+if len($VIM_INFO_PATH)
+  " should come after nocompatible
+  set viminfo=%,<800,'10,/50,:100,h,f0,n$VIM_INFO_PATH
 endif
 set undofile
 set list
@@ -212,6 +217,12 @@ nnoremap !g :Redir "git "<cr>
 nnoremap !d :VRedir<cr>git diff<cr>
 
 "
+" Misc
+"
+
+nnoremap <silent> <leader>R :checkt<cr>
+
+"
 " File specific
 "
 
@@ -232,8 +243,6 @@ syntax on
 "
 " Plugins
 "
-set nocompatible
-
 filetype off
 
 set rtp+=~/.vim/bundle/Vundle.vim

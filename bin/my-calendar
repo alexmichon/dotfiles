@@ -9,7 +9,7 @@ clear_calendar_reminders() {
 		at_jobs=$(cat $AT_JOBS_FILE)
 		if [[ -n "$at_jobs" ]]; then
 			for job in $at_jobs; do
-				atrm "$job"
+				atrm "$job" > /dev/null 2>&1
 			done
 		fi
 		> $AT_JOBS_FILE

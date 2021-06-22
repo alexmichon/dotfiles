@@ -77,7 +77,7 @@ imap ç _
 imap § /
 
 " Copy-paste with xclip
-vnoremap <silent> <leader>y :!xclip -f -sel clip<cr>
+vnoremap <silent> <leader>y :'<,'>w !xclip -f -sel clip<cr>
 noremap <silent> <leader>p :r!xclip -o -sel clip<cr>
 noremap <silent> <F2> :set paste!<cr>
 

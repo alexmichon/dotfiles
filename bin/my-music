@@ -29,7 +29,7 @@ dbus_spotify="dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org
 case "$1" in
 	show)
 		if [ $spotify_running = true ]; then
-			spotify_info=$($dbus_spotify org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:Metadata)
+			spotify_info=$($dbus_spotify org.freedesktop.DBus.Properties.Get string:org.mpris.MediaPlayer2.Player string:Metadata 2> /dev/null)
 			artist=$(spotify_artist)
 			title=$(spotify_title)
 			if [ "$artist" == "" ]; then
@@ -38,13 +38,11 @@ case "$1" in
 				echo "$artist - $title"
 			fi
 		fi
-		exit
 		;;
 	status)
 		if [ $spotify_running = true ]; then
-			echo $($dbus_spotify org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'PlaybackStatus' | grep -A1 "string" | cut -b26- | cut -d'"' -f1 | egrep -v ^$)
+			echo $($dbus_spotify org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'PlaybackStatus' 2> /dev/null | grep -A1 "string" | cut -b26- | cut -d'"' -f1 | egrep -v ^$)
 		fi
-		exit 0
 		;;
 	playpause)
 		if [ $spotify_running = true ]; then
@@ -62,5 +60,3 @@ case "$1" in
 		fi
 		;;
 esac
-
-refresh-bar music

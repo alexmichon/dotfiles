@@ -5,7 +5,7 @@ PROMPT_RE="\[$(hostname)\]"
 
 capture_tmux () {
 	local tmp=$(mktemp)
-	tmux capture-pane -pS -10000 > $tmp
+	tmux capture-pane -epS -10000 > $tmp
 	tac $tmp | sed "0,/$PROMPT_RE/d;/$PROMPT_RE/q" | tac > $CAPTURE_TMP_FILE
 	rm -f $tmp
 }

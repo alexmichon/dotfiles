@@ -5,7 +5,6 @@ setlocal shiftwidth=8
 setlocal smarttab
 setlocal cindent
 setlocal cinoptions=:0,l1,t0,g0
-setlocal colorcolumn=80
 
 syn keyword cType uint ubyte ulong
 syn keyword cType uint64_t uint32_t uint16_t uint8_t boolean_t int64_t int32_t int16_t int8_t
@@ -63,9 +62,9 @@ function! g:CtagsUpdate()
 endfunction
 
 function! g:UpdateTags()
-  echom "Updating tags"
-  exec "call g:CscopeUpdate()"
-  exec "call g:CtagsUpdate()"
+  exec "silent call g:CscopeUpdate()"
+  exec "silent call g:CtagsUpdate()"
+  echom "Tags are up to date !"
 endfunction
 
 augroup UpdateTags
@@ -95,4 +94,4 @@ nnoremap <silent> <Leader>Ci :CscopeQuery8<CR>
 nnoremap <silent> <Leader>Ca :CscopeQuery9<CR>
 
 " noremap <silent> <F5> :!cscope -Rbq<cr>:cs reset<cr>:!ctags -R --fields=+iaS --extra=+q<cr><cr>
-noremap <silent> <F5> :silent call g:UpdateTags()<cr>
+noremap <silent> <F5> :call g:UpdateTags()<cr>

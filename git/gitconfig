@@ -17,7 +17,7 @@
 	a = add
 	aa = add .
 	graph = log --graph --oneline --abbrev-commit --decorate --decorate-refs-exclude='remotes/origin/tmp/*' --all --format=format:'%C(bold yellow)%h%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold green)%d%C(reset) %C(bold cyan)(%ar)%C(reset)'
-	log1 = log --oneline --abbrev-commit --decorate --decorate-refs-exclude='remotes/origin/tmp/*' --all --format=format:'%C(bold yellow)%h%C(reset) %C(white)%s%C(reset) %C(dim white)- %an %C(reset) %C(bold green)%d%C(reset) %C(bold cyan)(%ar)%C(reset)'
+	log1 = log --oneline --abbrev-commit --decorate --decorate-refs-exclude='remotes/origin/tmp/*' --format=format:'%C(bold yellow)%h%C(reset) %C(white)%s%C(reset) %C(dim white)- %an %C(reset) %C(bold green)%d%C(reset) %C(bold cyan)(%ar)%C(reset)'
 	root = rev-parse --show-toplevel
 	prevdiff = diff HEAD~1..HEAD
 	subptrs = ls-tree -r HEAD

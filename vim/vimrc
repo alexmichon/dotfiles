@@ -64,6 +64,8 @@ vnoremap J :m '>+1<CR>gv=gv
 vnoremap K :m '<-2<CR>gv=gv
 nnoremap j gj
 nnoremap k gk
+vnoremap j gj
+vnoremap k gk
 
 nnoremap gp `[v`]
 
@@ -251,7 +253,7 @@ call vundle#begin()
 Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'tpope/vim-commentary'
-Plugin 'basilgor/vim-autotags'
+" Plugin 'basilgor/vim-autotags'
 
 " Autopairs
 Plugin 'jiangmiao/auto-pairs'
@@ -349,6 +351,8 @@ imap <expr> <Tab>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<Tab
 smap <expr> <Tab>   vsnip#expandable()  ? '<Plug>(vsnip-expand)'         : '<Tab>'
 
 " Expand or jump
+imap <expr> <C-o>   vsnip#available(1)  ? '<Plug>(vsnip-expand)'         : '<C-o>'
+smap <expr> <C-o>   vsnip#available(1)  ? '<Plug>(vsnip-expand)'         : '<C-o>'
 imap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
 smap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<Tab>'
 

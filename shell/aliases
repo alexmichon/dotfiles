@@ -5,7 +5,7 @@ alias ls='ls -F --color=auto'
 alias ll='ls -lhF --color=auto'
 alias la='ls -lahF --color=auto'
 alias grep='grep --color=auto'
-alias ggrep='grep -n --exclude={\*.o,\*.pem,\*.pdf,\*.swn,\*.swo,\*.swp,tags,cscope.out} --exclude-dir=.ccls-cache --color=auto'
+alias ggrep='grep -n --exclude={\*.o,\*.pem,\*.pdf,\*.swn,\*.swo,\*.swp,tags,cscope.out} --exclude-dir=.ccls-cache --color=auto -I'
 alias mkdir='mkdir -p'
 alias vi='vim'
 

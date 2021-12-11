@@ -23,3 +23,7 @@ vilast() {
 rgl() {
 	rg -g "!cscope*" -g "!tags" "$@" --color=always --heading -n | less -R
 }
+
+grepl() {
+    ggrep "$@" --color=always | less -R
+}

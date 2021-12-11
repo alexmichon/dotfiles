@@ -64,7 +64,10 @@ function update_global_git_vars() {
 	if [[ -n "$__IS_GIT_DIR" ]] && [[ -n "$GIT_PROMPT_ENABLE" ]]; then
 		__GLOBAL_GIT_STATUS=1
 
-		GIT_BRANCH=$(git symbolic-ref HEAD --short 2> /dev/null)
+		GIT_BRANCH=$(git describe --exact-match --tags 2> /dev/null)
+		if [[ "$?" != "0" ]]; then
+			GIT_BRANCH=$(git symbolic-ref HEAD --short 2> /dev/null)
+		fi
 		if [[ "$?" != "0" ]]; then
 			GIT_BRANCH=$(git rev-parse --short=6 HEAD 2> /dev/null)
 		else

@@ -5,6 +5,7 @@ setlocal shiftwidth=8
 setlocal smarttab
 setlocal cindent
 setlocal cinoptions=:0,l1,t0,g0
+setlocal colorcolumn=100
 
 syn keyword cType uint ubyte ulong
 syn keyword cType uint64_t uint32_t uint16_t uint8_t boolean_t int64_t int32_t int16_t int8_t
@@ -95,3 +96,5 @@ nnoremap <silent> <Leader>Ca :CscopeQuery9<CR>
 
 " noremap <silent> <F5> :!cscope -Rbq<cr>:cs reset<cr>:!ctags -R --fields=+iaS --extra=+q<cr><cr>
 noremap <silent> <F5> :call g:UpdateTags()<cr>
+
+nnoremap <silent> <leader>pp Ofprintf(stderr, "%s\n", __func__);<esc>==

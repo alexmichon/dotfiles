@@ -27,3 +27,5 @@ rgl() {
 grepl() {
     ggrep "$@" --color=always | less -R
 }
+
+[ -f "$HOME/.functions.local" ] && source "$HOME/.functions.local"

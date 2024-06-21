@@ -97,4 +97,4 @@ nnoremap <silent> <Leader>Ca :CscopeQuery9<CR>
 " noremap <silent> <F5> :!cscope -Rbq<cr>:cs reset<cr>:!ctags -R --fields=+iaS --extra=+q<cr><cr>
 noremap <silent> <F5> :call g:UpdateTags()<cr>
 
-nnoremap <silent> <leader>pp Ofprintf(stderr, "%s\n", __func__);<esc>==
+nnoremap <silent> <leader>pp Ofprintf(stderr, "%s:%u\n", __func__, __LINE__);<esc>==

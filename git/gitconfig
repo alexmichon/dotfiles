@@ -9,6 +9,8 @@
 	br = branch
 	ck = checkout
 	co = commit
+	ca = commit --amend
+	can = commit --amend --no-edit
 	last = "!git --no-pager log -1"
 	unstage = reset HEAD --
 	d = diff
@@ -19,6 +21,7 @@
 	graph = log --graph --oneline --abbrev-commit --decorate --decorate-refs-exclude='remotes/origin/tmp/*' --all --format=format:'%C(bold yellow)%h%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold green)%d%C(reset) %C(bold cyan)(%ar)%C(reset)'
 	graphall = log --graph --oneline --abbrev-commit --decorate --all --format=format:'%C(bold yellow)%h%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold green)%d%C(reset) %C(bold cyan)(%ar)%C(reset)'
 	log1 = log --oneline --abbrev-commit --decorate --decorate-refs-exclude='remotes/origin/tmp/*' --format=format:'%C(bold yellow)%h%C(reset) %C(white)%s%C(reset) %C(dim white)- %an %C(reset) %C(bold green)%d%C(reset) %C(bold cyan)(%ar)%C(reset)'
+	log2 = log --oneline --pretty='%C(auto) %h %s'
 	root = rev-parse --show-toplevel
 	prevdiff = diff HEAD~1..HEAD
 	subptrs = ls-tree -r HEAD
@@ -26,6 +29,9 @@
 	show-commit = "!git --no-pager log --format=%B -n 1"
 	rb = rebase
 	rbc = rebase --continue
+	cp = cherry-pick
+	cpc = cherry-pick --continue
+	pushf = push --force-with-lease
 [diff]
 	submodule = log
 [include]

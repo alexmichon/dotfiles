@@ -1,4 +1,5 @@
 tags
+.tags
 cscope*
 ncscope*
 *.swp
@@ -10,3 +11,5 @@ compile_commands.json
 .ccls-cache
 .my-scripts
 .gdb_history
+.bashrc
+.bash_profile
